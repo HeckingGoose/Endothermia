@@ -9,6 +9,17 @@ namespace ThreeThingGame
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
+        // CONST
+        private const int TARGET_FRAMERATE = 60;
+        private const int TARGET_WIDTH = 960;
+        private const int TARGET_HEIGHT = 540;
+        // ENDCONST
+
+        // VAR
+        // Window scale tracking
+        private Vector2 scale;
+        // ENDVAR
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -18,7 +29,16 @@ namespace ThreeThingGame
 
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
+            // Initialise window size
+            _graphics.PreferredBackBufferWidth = TARGET_WIDTH;
+            _graphics.PreferredBackBufferHeight = TARGET_HEIGHT;
+
+            // Set scale
+            scale.X = _graphics.PreferredBackBufferWidth / TARGET_WIDTH;
+            scale.Y = _graphics.PreferredBackBufferHeight / TARGET_HEIGHT;
+
+            // Apply changes
+            _graphics.ApplyChanges();
 
             base.Initialize();
         }
