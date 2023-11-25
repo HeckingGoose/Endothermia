@@ -13,13 +13,9 @@ namespace ThreeThingGame
         // Variables
         private uint _health;
         private uint _temperature;
-
         private byte _ID;
-
         private Vector2 _position;
-
         private Vector2 _velocity;
-
         private Texture2D _texture;
 
         // Constructors
@@ -27,17 +23,20 @@ namespace ThreeThingGame
         {
             _health = 100;
             _temperature = 38;
-
             _ID = ID;
-
             _position = Vector2.Zero;
-
             _velocity = Vector2.Zero;
-
             _texture = null;
         }
 
-        public Player(uint health, uint temperature, byte ID, Vector2 position, Vector2 velocity, Texture2D texture)
+        public Player(
+            uint health,
+            uint temperature,
+            byte ID,
+            Vector2 position,
+            Vector2 velocity,
+            Texture2D texture
+            )
         {
             _health = health;
             _temperature = temperature;

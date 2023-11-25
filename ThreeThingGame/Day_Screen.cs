@@ -42,18 +42,21 @@ namespace ThreeThingGame
             // Define dayString and calculate its position
             dayString = $"Day {day}";
             textSize = fonts["SWTxt_48"].MeasureString(dayString);
-            textPosition = new Vector2(480 - (textSize.X/2), 270 - (textSize.Y/2));
+            textPosition = new Vector2(
+                480 - (textSize.X/2),
+                270 - (textSize.Y/2)
+                );
             
         }
 
         // Methods
         public void RunLogic(
-            double gameTime,
+            double deltaTime,
             ref State.GameState state
             )
         {
             // Count how long this scene has been active
-            time += gameTime;
+            time += deltaTime;
             
             // If the scene is older than SKIP_TIME
             if (time > SKIP_TIME)
