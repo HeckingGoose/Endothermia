@@ -27,8 +27,11 @@ namespace ThreeThingGame
             Dictionary<string, SpriteFont> fonts
             )
         {
+            // Assign values
             _graphics = graphics;
             _spriteBatch = spriteBatch;
+
+            // Create new game button
             Button newGame = new Button(
                 text: "NEW GAME",
                 wordWrap: false,
@@ -39,17 +42,21 @@ namespace ThreeThingGame
                 rect: new Rectangle(355, 420, 250, 50),
                 onClick: NewGameStart
                 );
-            buttons.Add(newGame);
+
+            // Create exit game button
             Button exitGame = new Button(
                 text: "X",
                 wordWrap: false,
                 font: fonts["SWTxt_12"],
                 textColour: Color.White,
-                backColour: new Color(255, 200, 200, 255),
+                backColour: new Color(150, 50, 50, 255),
                 texture: textures["ButtonTexture"],
                 rect: new Rectangle(935, 0, 25, 25),
                 onClick: ExitGame
                 );
+
+            // Cache buttons
+            buttons.Add(newGame);
             buttons.Add(exitGame);
         }
 
@@ -87,13 +94,13 @@ namespace ThreeThingGame
             foreach(Button button in buttons )
             {
                 spriteBatch.Draw(button.Texture, button.Rect, button.BackColour);
-                spriteBatch.DrawString(button.Font, button.Text, new Vector2(button.Rect.X, button.Rect.Y), button.TextColour);
+                spriteBatch.DrawString(button.Font, button.Text, button.TextPosition, button.TextColour);
             }
         }
 
         private void NewGameStart(ref State.GameState state)
         {
-            state = State.GameState.Day_Load;
+            state = State.GameState.Intro_Load;
         }
 
         private void ExitGame(ref State.GameState state)

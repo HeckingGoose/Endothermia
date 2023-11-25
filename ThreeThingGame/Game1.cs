@@ -41,6 +41,9 @@ namespace ThreeThingGame
         // Time tracking
         private int day;
 
+        // Keymap
+        private Dictionary<Keys, bool> keyMap;
+
         // ENDVAR
 
         public Game1()
@@ -56,8 +59,12 @@ namespace ThreeThingGame
             state = State.GameState.Menu_Main;
             fonts = new Dictionary<string, SpriteFont>();
             textures = new Dictionary<string, Texture2D>();
+            keyMap = new Dictionary<Keys, bool>();
             mouseButtonsHeld = new bool[3];
             day = 1;
+
+            // Track utility keys
+            keyMap.Add(Keys.F11, false);
 
             // Initialise window size
             _graphics.PreferredBackBufferWidth = TARGET_WIDTH;
@@ -98,20 +105,61 @@ namespace ThreeThingGame
                 textures,
                 fonts
                 );
-
-            // Initialise intro screen
-            introScreen = new Intro_Screen(
-                ref _graphics,
-                ref _spriteBatch
-                );
-
         }
 
         protected override void Update(GameTime gameTime)
         {
+            // Calculate game speed
+            float gameSpeed = (float)gameTime.ElapsedGameTime.TotalSeconds * TARGET_FRAMERATE;
+
+            // Get mouse state
             MouseState mouseState = Mouse.GetState();
 
-            float gameSpeed = (float)gameTime.ElapsedGameTime.TotalSeconds * TARGET_FRAMERATE;
+            // Get keyboard state
+            KeyboardState keyboardState = Keyboard.GetState();
+
+            // Toggle fullscreen
+            if (keyboardState.IsKeyDown(Keys.F11) && !keyMap[Keys.F11])
+            {
+                // Set F11 to be pressed
+                keyMap[Keys.F11] = true;
+
+                // Flip display mode
+                _graphics.IsFullScreen = !_graphics.IsFullScreen;
+
+                if (_graphics.IsFullScreen)
+                {
+                    // Switch resolution to match monitor
+                    _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+                    _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+
+                    // Set game window to borderless
+                    _graphics.HardwareModeSwitch = false;
+
+                    // Set scale
+                    scale.X = _graphics.PreferredBackBufferWidth / TARGET_WIDTH;
+                    scale.Y = _graphics.PreferredBackBufferHeight / TARGET_HEIGHT;
+                }
+                else
+                {
+                    // Switch resolution to meet target
+                    _graphics.PreferredBackBufferWidth = TARGET_WIDTH;
+                    _graphics.PreferredBackBufferHeight = TARGET_HEIGHT;
+
+                    // Set game window to windowed
+                    _graphics.HardwareModeSwitch = true;
+
+                    // Set scale
+                    scale.X = _graphics.PreferredBackBufferWidth / TARGET_WIDTH;
+                    scale.Y = _graphics.PreferredBackBufferHeight / TARGET_HEIGHT;
+                }
+
+                _graphics.ApplyChanges();
+            }
+            else if (!keyboardState.IsKeyDown(Keys.F11) && keyMap[Keys.F11])
+            {
+                keyMap[Keys.F11] = false;
+            }
 
             switch (state)
             {
@@ -124,6 +172,11 @@ namespace ThreeThingGame
                     break;
 
                 case State.GameState.Intro_Load:
+                    introScreen = new Intro_Screen(
+                        ref _graphics,
+                        ref _spriteBatch
+                        );
+                    state = State.GameState.Intro_Main;
                     break;
 
                 case State.GameState.Intro_Main:
@@ -165,7 +218,7 @@ namespace ThreeThingGame
                 case State.GameState.Game_Main:
                     gameScreen.RunLogic(
                         gameSpeed,
-                        Keyboard.GetState().GetPressedKeys()
+                        keyboardState.GetPressedKeys()
                         );
                     break;
 

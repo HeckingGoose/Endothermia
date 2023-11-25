@@ -32,9 +32,14 @@ namespace ThreeThingGame
             int day
             )
         {
+            // Assign values
             _graphics = graphics;
             _spriteBatch = spriteBatch;
+
+            // Set starting value
             time = 0;
+
+            // Define dayString and calculate its position
             dayString = $"Day {day}";
             textSize = fonts["SWTxt_48"].MeasureString(dayString);
             textPosition = new Vector2(480 - (textSize.X/2), 270 - (textSize.Y/2));
@@ -47,10 +52,13 @@ namespace ThreeThingGame
             ref State.GameState state
             )
         {
-            // Run logic here
+            // Count how long this scene has been active
             time += gameTime;
+            
+            // If the scene is older than SKIP_TIME
             if (time > SKIP_TIME)
             {
+                // Move into the game loading state
                 state = State.GameState.Game_Load;
             }
 
@@ -60,7 +68,13 @@ namespace ThreeThingGame
             Dictionary<string, SpriteFont> fonts
             )
         {
-            spriteBatch.DrawString(fonts["SWTxt_48"], dayString, textPosition, Color.White);
+            // Draw dayString
+            spriteBatch.DrawString(
+                fonts["SWTxt_48"],
+                dayString,
+                textPosition,
+                Color.White
+                );
         }
     }
 }

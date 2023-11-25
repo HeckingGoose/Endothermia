@@ -12,6 +12,7 @@ namespace ThreeThingGame
     {
         // Variables
         private string _text;
+        private Vector2 _textPosition;
         private bool _wordWrap;
         private Color _textColour;
         private Color _backColour;
@@ -33,6 +34,7 @@ namespace ThreeThingGame
             _texture = null;
             _rect = new Rectangle();
             _onClick = null;
+            _textPosition = new Vector2();
         }
         public Button(
             string text,
@@ -53,6 +55,32 @@ namespace ThreeThingGame
             _texture = texture;
             _rect = rect;
             _onClick = onClick;
+
+            // Calculate text position
+            _textPosition = CalculateTextPosition(
+                _rect,
+                _font,
+                _text
+                );
+        }
+
+        // Static methods
+        private static Vector2 CalculateTextPosition(Rectangle rect, SpriteFont font, string text)
+        {
+            // Define new vector
+            Vector2 output = Vector2.Zero;
+
+            // Calculate size of text in button
+            Vector2 textSize = font.MeasureString(text);
+
+            // Calculate text position based on button rect and text size
+            output = new Vector2(
+                rect.X + (rect.Width - textSize.X) / 2,
+                rect.Y + (rect.Height - textSize.Y) / 2
+                );
+
+            // Return result
+            return output;
         }
 
         // Methods
@@ -95,6 +123,11 @@ namespace ThreeThingGame
         {
             get { return _onClick; }
             set { _onClick = value; }
+        }
+        public Vector2 TextPosition
+        {
+            get { return _textPosition; }
+            set { _textPosition = value; }
         }
     }
 }

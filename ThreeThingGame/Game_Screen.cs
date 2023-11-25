@@ -69,7 +69,9 @@ namespace ThreeThingGame
         }
 
         // Methods
-        public void RunLogic(float gameSpeed, Keys[] KeysPressed)
+        public void RunLogic(
+            float gameSpeed,
+            Keys[] KeysPressed)
         {
             // Run logic here
             Vector2 tempVelPlayer1 = player1.Velocity;
