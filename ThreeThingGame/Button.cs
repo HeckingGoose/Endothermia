@@ -1,7 +1,7 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,7 +17,7 @@ namespace ThreeThingGame
         private Rectangle _rect;
         private ClickEvent _onClick; 
         // Callback method
-        public delegate void ClickEvent();
+        public delegate void ClickEvent(ref uint state);
 
         // Constructors
         public Button()
