@@ -16,31 +16,24 @@ namespace ThreeThingGame
         private SpriteBatch _spriteBatch;
 
         // Internal Variables
-        private SpriteFont font;
+
 
         // Constructor
         public Menu(ref GraphicsDeviceManager graphics, ref SpriteBatch spriteBatch)
         {
             _graphics = graphics;
             _spriteBatch = spriteBatch;
-            Content.RootDirectory = "Content";
-
-            base.Initialize();
         }
 
         // Methods
-        public  void Load()
-        {
-
-            SpriteFont font = Content.Load<SpriteFont>(@"Fonts\File");
-        }
         public void RunLogic()
         {
-
+            // Run logic here
         }
-        public void RunGraphics(SpriteBatch spriteBatch)
+        public void RunGraphics(SpriteBatch spriteBatch,
+            SpriteFont SWTxt_36)
         {
-            spriteBatch.DrawString(font, "Test text", new Vector2(10,10), Color.White);
+            spriteBatch.DrawString(SWTxt_36, "Test text", new Vector2(10,10), Color.White);
         }
     }
 }

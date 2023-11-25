@@ -13,10 +13,10 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin Fonts/File.spritefont
+#begin Fonts/SWTxt_36.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
-/build:Fonts/File.spritefont
+/build:Fonts/SWTxt_36.spritefont
 

@@ -16,10 +16,14 @@ namespace ThreeThingGame
         // ENDCONST
 
         // VAR
+        // Fonts
+        private SpriteFont SWTxt_36;
+
         // Window scale tracking
         private Vector2 scale;
 
         // Screens
+        private uint state;
         private Menu menuScreen;
 
         // ENDVAR
@@ -33,6 +37,9 @@ namespace ThreeThingGame
 
         protected override void Initialize()
         {
+            // Initialise values
+            state = 0;
+
             // Initialise window size
             _graphics.PreferredBackBufferWidth = TARGET_WIDTH;
             _graphics.PreferredBackBufferHeight = TARGET_HEIGHT;
@@ -51,19 +58,22 @@ namespace ThreeThingGame
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // Initialise screens
+            // Initialise menu screen
             menuScreen = new Menu(ref _graphics, ref _spriteBatch);
 
-            // Load screen content
-            menuScreen.Load();
+            // Load game content
+            SWTxt_36 = Content.Load<SpriteFont>(@"Fonts\SWTxt_36");
         }
 
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
-
-            menuScreen.RunLogic();
+            switch (state)
+            {
+                case 0: // Menu screen
+                    menuScreen.RunLogic(
+                        );
+                    break;
+            }
 
             base.Update(gameTime);
         }
@@ -72,10 +82,20 @@ namespace ThreeThingGame
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
+            // Begin draw
             _spriteBatch.Begin();
 
-            menuScreen.RunGraphics(_spriteBatch);
+            switch (state)
+            {
+                case 0: // Menu screen
+                    menuScreen.RunGraphics(
+                        _spriteBatch,
+                        SWTxt_36
+                        );
+                    break;
+            }
 
+            /// End draw
             _spriteBatch.End();
 
             base.Draw(gameTime);
