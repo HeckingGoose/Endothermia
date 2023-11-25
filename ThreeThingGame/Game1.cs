@@ -18,6 +18,10 @@ namespace ThreeThingGame
         // VAR
         // Window scale tracking
         private Vector2 scale;
+
+        // Screens
+        private Menu menuScreen;
+
         // ENDVAR
 
         public Game1()
@@ -47,7 +51,11 @@ namespace ThreeThingGame
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            // Initialise screens
+            menuScreen = new Menu(ref _graphics, ref _spriteBatch);
+
+            // Load screen content
+            menuScreen.Load();
         }
 
         protected override void Update(GameTime gameTime)
@@ -55,7 +63,7 @@ namespace ThreeThingGame
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
+            menuScreen.RunLogic();
 
             base.Update(gameTime);
         }
@@ -64,7 +72,11 @@ namespace ThreeThingGame
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
+            _spriteBatch.Begin();
+
+            menuScreen.RunGraphics(_spriteBatch);
+
+            _spriteBatch.End();
 
             base.Draw(gameTime);
         }
