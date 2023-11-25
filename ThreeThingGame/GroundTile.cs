@@ -40,6 +40,11 @@ namespace ThreeThingGame
             _filled = filled;
             _type = type;
         }
+        public GroundTile() // Empty constructor
+        {
+            _filled = true;
+            _type = 50;
+        }
 
         // Methods
         public bool Filled

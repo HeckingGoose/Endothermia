@@ -21,15 +21,15 @@ namespace ThreeThingGame
         private Dictionary<string, SpriteFont> fonts;
 
         // Textures
-        private Texture2D buttonTexture;
-        private Texture2D titleTexture;
+        private Dictionary<string, Texture2D> textures;
 
         // Window scale tracking
         private Vector2 scale;
 
         // Screens
         private uint state;
-        private Menu menuScreen;
+        private Menu_Screen menuScreen;
+        private Intro_Screen introScreen;
         private Game_Screen gameScreen;
 
         // Mouse held
@@ -49,6 +49,7 @@ namespace ThreeThingGame
             // Initialise values
             state = 0;
             fonts = new Dictionary<string, SpriteFont>();
+            textures = new Dictionary<string, Texture2D>();
             mouseButtonsHeld = new bool[3];
 
             // Initialise window size
@@ -74,22 +75,38 @@ namespace ThreeThingGame
             fonts.Add("SWTxt_24", Content.Load<SpriteFont>(@"Fonts\SWTxt_24"));
             fonts.Add("SWTxt_36", Content.Load<SpriteFont>(@"Fonts\SWTxt_36"));
 
-            buttonTexture = Content.Load<Texture2D>(@"Sprites\ButtonTexture");
-            titleTexture = Content.Load<Texture2D>(@"Sprites\blackTitle");
+            textures.Add("ButtonTexture", Content.Load<Texture2D>(@"Sprites\ButtonTexture"));
+            textures.Add("TitleTexture", Content.Load<Texture2D>(@"Sprites\blackTitle"));
+            textures.Add("Coal", Content.Load<Texture2D>(@"Sprites\coal"));
+            textures.Add("Oil", Content.Load<Texture2D>(@"Sprites\oil"));
+            textures.Add("Gas", Content.Load<Texture2D>(@"Sprites\gas"));
+            textures.Add("Rock", Content.Load<Texture2D>(@"Sprites\rock"));
 
 
             // Initialise menu screen
-            menuScreen = new Menu(
+            menuScreen = new Menu_Screen(
                 ref _graphics,
                 ref _spriteBatch,
-                buttonTexture,
+                textures,
                 fonts
+                );
+
+            // Initialise intro screen
+            introScreen = new Intro_Screen(
+                ref _graphics,
+                ref _spriteBatch
                 );
 
             // Initialise game screen
             gameScreen = new Game_Screen(
                 ref _graphics,
-                ref _spriteBatch
+                ref _spriteBatch,
+                19,
+                25,
+                0.05f,
+                0.025f,
+                0.015f,
+                0.2f
                 );
         }
 
@@ -116,6 +133,8 @@ namespace ThreeThingGame
                         );
                     break;
                 case 1: // Intro screen
+                    introScreen.RunLogic(
+                        );
                     break;
                 case 2: // Main game loop
                     gameScreen.RunLogic(
@@ -166,14 +185,18 @@ namespace ThreeThingGame
                 case 0: // Menu screen
                     menuScreen.RunGraphics(
                         _spriteBatch,
-                        titleTexture
+                        textures
                         );
                     break;
                 case 1: // Intro screen
+                    introScreen.RunGraphics(
+                        _spriteBatch
+                        );
                     break;
                 case 2: // Main game loop
                     gameScreen.RunGraphics(
-                        _spriteBatch
+                        _spriteBatch,
+                        textures
                         );
                     break;
             }

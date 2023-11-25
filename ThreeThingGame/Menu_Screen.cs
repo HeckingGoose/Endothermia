@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ThreeThingGame
 {
-    public class Menu : Game
+    public class Menu_Screen : Game
     {
         // External Variables
         private GraphicsDeviceManager _graphics;
@@ -20,10 +20,10 @@ namespace ThreeThingGame
 
 
         // Constructor
-        public Menu(
+        public Menu_Screen(
             ref GraphicsDeviceManager graphics,
             ref SpriteBatch spriteBatch,
-            Texture2D buttonTexture,
+            Dictionary<string, Texture2D> textures,
             Dictionary<string, SpriteFont> fonts
             )
         {
@@ -35,7 +35,7 @@ namespace ThreeThingGame
                 font: fonts["SWTxt_24"],
                 textColour: Color.Black,
                 backColour: Color.White,
-                texture: buttonTexture,
+                texture: textures["ButtonTexture"],
                 rect: new Rectangle(355, 420, 250, 50),
                 onClick: NewGameStart
                 );
@@ -46,7 +46,7 @@ namespace ThreeThingGame
                 font: fonts["SWTxt_12"],
                 textColour: Color.White,
                 backColour: new Color(255, 200, 200, 255),
-                texture: buttonTexture,
+                texture: textures["ButtonTexture"],
                 rect: new Rectangle(935, 0, 25, 25),
                 onClick: ExitGame
                 );
@@ -81,10 +81,10 @@ namespace ThreeThingGame
         }
         public void RunGraphics(
             SpriteBatch spriteBatch,
-            Texture2D titleTexture
+            Dictionary<string, Texture2D> textures
             )
         {
-            spriteBatch.Draw(titleTexture, new Rectangle(280, 80, 400, 300), Color.White);
+            spriteBatch.Draw(textures["TitleTexture"], new Rectangle(280, 80, 400, 300), Color.White);
             foreach(Button button in buttons )
             {
                 spriteBatch.Draw(button.Texture, button.Rect, button.BackColour);

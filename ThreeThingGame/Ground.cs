@@ -10,7 +10,48 @@ namespace ThreeThingGame
 {
     internal class Ground
     {
+        // Variables
+        private GroundTile[,] _tiles;
+        private uint _width;
+        private uint _depth;
+
+        // Constructors
+        public Ground() // Default constructor
+        {
+            _tiles = null;
+            _width = 0;
+            _depth = 0;
+        }
+        public Ground(
+            GroundTile[,] tiles,
+            uint width,
+            uint depth
+            )
+        {
+            _tiles = tiles;
+            _width = width;
+            _depth = depth;
+        }
+
+
         // Methods
+        public GroundTile[,] Tiles
+        {
+            get { return _tiles; }
+            set { _tiles = value; }
+        }
+        public uint Width
+        {
+            get { return _width; }
+            set { _width = value; }
+        }
+        public uint Depth
+        {
+            get { return _depth; }
+            set { _depth = value; }
+        }
+
+        // Static methods
         /// <summary>
         /// Generates a ground of given width and depth based on given probabilities.
         /// </summary>
@@ -31,7 +72,7 @@ namespace ThreeThingGame
             )
         {
             // Early out
-            if (coalDist + oilDist + gasDist + 3 * clumpSum< 1)
+            if (coalDist + oilDist + gasDist + 3 * clumpSum > 1)
             {
                 // If the probabilities ever sum to be more than 1
                 return null;
@@ -51,17 +92,20 @@ namespace ThreeThingGame
                     // Define function for adding to sum
                     void ClumpSum(GroundTile tile, ref float[] clumpSums)
                     {
-                        switch (tile.Type)
+                        if (tile != null)
                         {
-                            case 1: // Coal
-                                clumpSums[0] = clumpSum;
-                                break;
-                            case 2: // Oil
-                                clumpSums[1] = clumpSum;
-                                break;
-                            case 3: // Gas
-                                clumpSums[2] = clumpSum;
-                                break;
+                            switch (tile.Type)
+                            {
+                                case 1: // Coal
+                                    clumpSums[0] = clumpSum;
+                                    break;
+                                case 2: // Oil
+                                    clumpSums[1] = clumpSum;
+                                    break;
+                                case 3: // Gas
+                                    clumpSums[2] = clumpSum;
+                                    break;
+                            }
                         }
                     }
                     float[] clumpSums = new float[3];
@@ -101,22 +145,22 @@ namespace ThreeThingGame
                     // True if coal
                     if (randomValue < coalDist + clumpSums[0])
                     {
-                        output[y, x].Type = 1;
+                        output[y, x] = new GroundTile(1);
                     }
                     // True if oil
                     else if (randomValue < coalDist + clumpSums[0] + oilDist + clumpSums[1])
                     {
-                        output[y, x].Type = 2;
+                        output[y, x] = new GroundTile(2);
                     }
                     // True if gas
                     else if (randomValue < coalDist + clumpSums[0] + oilDist + clumpSums[1] + gasDist + clumpSums[2])
                     {
-                        output[y, x].Type = 3;
+                        output[y, x] = new GroundTile(3);
                     }
                     // True if rock
                     else
                     {
-                        output[y, x].Type = 0;
+                        output[y, x] = new GroundTile(0);
                     }
                 }
             }
@@ -144,8 +188,8 @@ namespace ThreeThingGame
         {// DONT FORGET TO APPLY DRAWSPACE XY OFFSETS
             // Calculate scale factors between screen space and ground space
             Vector2 scale = new Vector2(
-                drawSpace.X / groundWidth,
-                drawSpace.Y / groundDepth
+                drawSpace.Width / groundWidth,
+                drawSpace.Height / groundDepth
                 );
 
             // Draw tiles
@@ -171,7 +215,7 @@ namespace ThreeThingGame
                                 case 0:
                                     // Draw rock texture
                                     spriteBatch.Draw(
-                                        textures["rock"],
+                                        textures["Rock"],
                                         destRect,
                                         Color.White
                                         );
@@ -180,7 +224,7 @@ namespace ThreeThingGame
                                 case 1:
                                     // Draw coal texture
                                     spriteBatch.Draw(
-                                        textures["coal"],
+                                        textures["Coal"],
                                         destRect,
                                         Color.White
                                         );
@@ -189,7 +233,7 @@ namespace ThreeThingGame
                                 case 2:
                                     // Draw oil texture
                                     spriteBatch.Draw(
-                                        textures["oil"],
+                                        textures["Oil"],
                                         destRect,
                                         Color.White
                                         );
@@ -198,7 +242,7 @@ namespace ThreeThingGame
                                 case 3:
                                     // Draw gas(?) texture
                                     spriteBatch.Draw(
-                                        textures["gas"],
+                                        textures["Gas"],
                                         destRect,
                                         Color.White
                                         );
@@ -210,7 +254,7 @@ namespace ThreeThingGame
                         case false:
                             // Draw background texture
                             spriteBatch.Draw(
-                                textures["empty"],
+                                textures["Empty"],
                                 destRect,
                                 Color.White
                                 );

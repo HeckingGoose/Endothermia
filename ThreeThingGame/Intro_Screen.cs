@@ -26,7 +26,7 @@ namespace ThreeThingGame
         }
 
         // Methods
-        public void RunLogic(ref uint state)
+        public void RunLogic()
         {
             // Run logic here
         }
