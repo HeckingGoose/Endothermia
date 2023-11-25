@@ -79,7 +79,7 @@ namespace ThreeThingGame
             textures.Add("ButtonTexture", Content.Load<Texture2D>(@"Sprites\ButtonTexture"));
             textures.Add("TitleTexture", Content.Load<Texture2D>(@"Sprites\blackTitle"));
             textures.Add("Coal", Content.Load<Texture2D>(@"Sprites\coal"));
-            textures.Add("Oil", Content.Load<Texture2D>(@"Sprites\oil"));
+            textures.Add("Oil", Content.Load<Texture2D>(@"Sprites\Oil_Full"));
             textures.Add("Gas", Content.Load<Texture2D>(@"Sprites\gas"));
             textures.Add("Rock", Content.Load<Texture2D>(@"Sprites\rock"));
 

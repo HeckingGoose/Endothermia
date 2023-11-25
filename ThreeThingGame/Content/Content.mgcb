@@ -118,7 +118,7 @@
 /processorParam:TextureFormat=Color
 /build:Sprites/gas.png
 
-#begin Sprites/oil.png
+#begin Sprites/Oil_Full.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -128,7 +128,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Sprites/oil.png
+/build:Sprites/Oil_Full.png
 
 #begin Sprites/red_front.png
 /importer:TextureImporter
