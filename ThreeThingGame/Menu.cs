@@ -94,7 +94,7 @@ namespace ThreeThingGame
 
         private void NewGameStart(ref uint state)
         {
-            state = 1;
+            state = 2;
         }
 
         private void ExitGame(ref uint state)

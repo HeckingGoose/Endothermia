@@ -30,6 +30,7 @@ namespace ThreeThingGame
         // Screens
         private uint state;
         private Menu menuScreen;
+        private Game_Screen gameScreen;
 
         // Mouse held
         private bool[] mouseButtonsHeld;
@@ -84,6 +85,12 @@ namespace ThreeThingGame
                 buttonTexture,
                 fonts
                 );
+
+            // Initialise game screen
+            gameScreen = new Game_Screen(
+                ref _graphics,
+                ref _spriteBatch
+                );
         }
 
         protected override void Update(GameTime gameTime)
@@ -95,6 +102,8 @@ namespace ThreeThingGame
                 mouseState.Position.X - Window.Position.X,
                 mouseState.Position.Y - Window.Position.Y
                 );
+
+            float gameSpeed = (float)gameTime.ElapsedGameTime.TotalSeconds * TARGET_FRAMERATE;
 
             switch (state)
             {
@@ -109,6 +118,9 @@ namespace ThreeThingGame
                 case 1: // Intro screen
                     break;
                 case 2: // Main game loop
+                    gameScreen.RunLogic(
+                        gameSpeed
+                        );
                     break;
             }
             
@@ -139,9 +151,6 @@ namespace ThreeThingGame
                 mouseButtonsHeld[2] = false;
             }
 
-
-
-
             base.Update(gameTime);
         }
 
@@ -163,6 +172,9 @@ namespace ThreeThingGame
                 case 1: // Intro screen
                     break;
                 case 2: // Main game loop
+                    gameScreen.RunGraphics(
+                        _spriteBatch
+                        );
                     break;
             }
 
