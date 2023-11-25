@@ -31,6 +31,9 @@ namespace ThreeThingGame
         private uint state;
         private Menu menuScreen;
 
+        // Mouse held
+        private bool[] mouseButtonsHeld;
+
         // ENDVAR
 
         public Game1()
@@ -45,6 +48,7 @@ namespace ThreeThingGame
             // Initialise values
             state = 0;
             fonts = new Dictionary<string, SpriteFont>();
+            mouseButtonsHeld = new bool[3];
 
             // Initialise window size
             _graphics.PreferredBackBufferWidth = TARGET_WIDTH;
@@ -84,11 +88,15 @@ namespace ThreeThingGame
 
         protected override void Update(GameTime gameTime)
         {
+            MouseState mouseState = Mouse.GetState();
+
             switch (state)
             {
                 case 0: // Menu screen
                     menuScreen.RunLogic(
-                        ref state
+                        ref state,
+                        mouseButtonsHeld,
+                        mouseState
                         );
                     break;
                 case 1: // Intro screen
@@ -96,6 +104,36 @@ namespace ThreeThingGame
                 case 2: // Main game loop
                     break;
             }
+            
+            if (mouseState.LeftButton == ButtonState.Pressed)
+            {
+                mouseButtonsHeld[0] = true;
+            }
+            else
+            {
+                mouseButtonsHeld[0] = false;
+            }
+
+            if (mouseState.RightButton == ButtonState.Pressed)
+            {
+                mouseButtonsHeld[1] = true;
+            }
+            else
+            {
+                mouseButtonsHeld[1] = false;
+            }
+
+            if (mouseState.MiddleButton == ButtonState.Pressed)
+            {
+                mouseButtonsHeld[2] = true;
+            }
+            else
+            {
+                mouseButtonsHeld[2] = false;
+            }
+
+
+
 
             base.Update(gameTime);
         }

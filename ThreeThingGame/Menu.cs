@@ -44,7 +44,7 @@ namespace ThreeThingGame
                 text: "X",
                 wordWrap: false,
                 font: fonts["SWTxt_12"],
-                textColour: Color.Red,
+                textColour: Color.White,
                 backColour: new Color(255, 200, 200, 255),
                 texture: buttonTexture,
                 rect: new Rectangle(935, 0, 25, 25),
@@ -54,9 +54,25 @@ namespace ThreeThingGame
         }
 
         // Methods
-        public void RunLogic(ref uint state)
+        public void RunLogic(ref uint state, bool[] mouseButtonsHeld, MouseState mouseState)
         {
+
             // Run logic here
+            foreach(Button button in buttons)
+            {
+                if (mouseState.Position.X >= button.Rect.X 
+                    && mouseState.Position.X <= button.Rect.X + button.Rect.Width
+                    && mouseState.Position.Y >= button.Rect.Y
+                    && mouseState.Position.Y <= button.Rect.Y + button.Rect.Height
+                    )
+                {
+                    if (!mouseButtonsHeld[0] 
+                        && mouseState.LeftButton == ButtonState.Pressed)
+                    {
+                        button.OnClick(ref state);
+                    }
+                }
+            }
         }
         public void RunGraphics(
             SpriteBatch spriteBatch,
