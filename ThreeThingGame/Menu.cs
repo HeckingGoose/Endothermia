@@ -54,16 +54,21 @@ namespace ThreeThingGame
         }
 
         // Methods
-        public void RunLogic(ref uint state, bool[] mouseButtonsHeld, MouseState mouseState)
+        public void RunLogic(
+            ref uint state,
+            bool[] mouseButtonsHeld,
+            MouseState mouseState,
+            (int X, int Y) mousePosition
+            )
         {
 
             // Run logic here
             foreach(Button button in buttons)
             {
-                if (mouseState.Position.X >= button.Rect.X 
-                    && mouseState.Position.X <= button.Rect.X + button.Rect.Width
-                    && mouseState.Position.Y >= button.Rect.Y
-                    && mouseState.Position.Y <= button.Rect.Y + button.Rect.Height
+                if (mousePosition.X >= button.Rect.X 
+                    && mousePosition.X <= button.Rect.X + button.Rect.Width
+                    && mousePosition.Y >= button.Rect.Y
+                    && mousePosition.Y <= button.Rect.Y + button.Rect.Height
                     )
                 {
                     if (!mouseButtonsHeld[0] 
@@ -95,6 +100,7 @@ namespace ThreeThingGame
         private void ExitGame(ref uint state)
         {
             Exit();
+            Environment.Exit(0);
         }
     }
 }

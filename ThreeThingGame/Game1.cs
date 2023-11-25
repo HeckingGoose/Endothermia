@@ -90,13 +90,20 @@ namespace ThreeThingGame
         {
             MouseState mouseState = Mouse.GetState();
 
+            // Patch
+            (int mouseX, int mouseY) mousePosition = (
+                mouseState.Position.X - Window.Position.X,
+                mouseState.Position.Y - Window.Position.Y
+                );
+
             switch (state)
             {
                 case 0: // Menu screen
                     menuScreen.RunLogic(
                         ref state,
                         mouseButtonsHeld,
-                        mouseState
+                        mouseState,
+                        mousePosition
                         );
                     break;
                 case 1: // Intro screen
