@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,7 @@ namespace ThreeThingGame
         // Variables
         private bool _filled;
         private byte _type;
+        private Rectangle _rect;
 
         // Constructors
         /// <summary>
@@ -33,11 +35,12 @@ namespace ThreeThingGame
         /// <param name="filled">Whether the tile is filled or not.</param>
         /// <param name="type">Whether the tile is rock, coal, oil or gas.</param>
         public GroundTile( // Complete constructor
-            bool filled,
+            Rectangle rect,
             byte type
             )
         {
-            _filled = filled;
+            _filled = true;
+            _rect = rect;
             _type = type;
         }
         public GroundTile() // Empty constructor
@@ -56,6 +59,11 @@ namespace ThreeThingGame
         {
             get { return _type; }
             set { _type = value; }
+        }
+        public Rectangle Rect
+        {
+            get { return _rect; }
+            set { _rect = value; }
         }
     }
 }

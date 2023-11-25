@@ -296,5 +296,63 @@ namespace ThreeThingGame
                 }
             }
         }
+        /// <summary>
+        /// Given a ground, returns an array of all tiles with exposed edges.
+        /// </summary>
+        /// <param name="ground">The ground to search for exposed tiles on.</param>
+        /// <returns>Returns an array of ground tiles.</returns>
+        public static GroundTile[] GetSurface(Ground ground)
+        {
+            // Define list of ground tiles
+            List<GroundTile> container = new List<GroundTile>();
+
+            // Loop through each block in ground
+            for (int y = 0; y < ground.Depth; y++)
+            {
+                // Track if we are still at the surface
+                bool atSurface = false;
+
+                for (int x = 0; x < ground.Width; x++)
+                {
+                    // Track if the tile is exposed on any side
+                    bool exposed = false;
+
+                    // Check if any of the current tile's sides are exposed
+                    if (y > 0 && !ground.Tiles[y - 1, x].Filled)
+                    {
+                        exposed = true;
+                    }
+                    else if (y < ground.Depth - 1 && !ground.Tiles[y + 1, x].Filled)
+                    {
+                        exposed = true;
+                    }
+                    else if (x > 0 && !ground.Tiles[y, x - 1].Filled)
+                    {
+                        exposed = true;
+                    }
+                    else if (x < ground.Width - 1 && !ground.Tiles[y, x + 1].Filled)
+                    {
+                        exposed = true;
+                    }
+
+                    // If exposed
+                    if (exposed)
+                    {
+                        container.Add(ground.Tiles[y, x]);
+                        atSurface = true;
+                    }
+
+                }
+
+                if (!atSurface)
+                {
+                    // Ditch the loop, as the surface has been read
+                    break;
+                }
+            }
+
+            // Return array of surface tiles
+            return container.ToArray();
+        }
     }
 }

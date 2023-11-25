@@ -13,10 +13,10 @@ namespace ThreeThingGame
         private SpriteBatch _spriteBatch;
 
         // CONST
-        private const int TARGET_FRAMERATE = 240;
+        private const int TARGET_FRAMERATE = 60;
         private const int TARGET_WIDTH = 960;
         private const int TARGET_HEIGHT = 540;
-        private const int DAYTIME_SECONDS = 5;
+        private const int DAYTIME_SECONDS = 240;
         // ENDCONST
 
         // VAR
