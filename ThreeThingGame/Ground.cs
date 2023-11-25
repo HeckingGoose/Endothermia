@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -121,6 +123,101 @@ namespace ThreeThingGame
 
             // Return result
             return output;
+        }
+        /// <summary>
+        /// Draws the ground given a set of parameters.
+        /// </summary>
+        /// <param name="spriteBatch">The sprite batcher to draw using.</param>
+        /// <param name="ground">The ground to draw.</param>
+        /// <param name="groundWidth">Represents the width of the ground in blocks.</param>
+        /// <param name="groundDepth">Represents the depth of the ground in blocks.</param>
+        /// <param name="drawSpace">A rect representing the origin, width and height of the space to draw in.</param>
+        /// <param name="textures">A dictionary of textures.</param>
+        public static void DrawGround(
+            SpriteBatch spriteBatch,
+            GroundTile[,] ground,
+            uint groundWidth,
+            uint groundDepth,
+            Rectangle drawSpace,
+            Dictionary<string, Texture2D> textures
+            )
+        {// DONT FORGET TO APPLY DRAWSPACE XY OFFSETS
+            // Calculate scale factors between screen space and ground space
+            Vector2 scale = new Vector2(
+                drawSpace.X / groundWidth,
+                drawSpace.Y / groundDepth
+                );
+
+            // Draw tiles
+            for (int y = 0; y < groundDepth; y++)
+            {
+                for (int x = 0; x < groundWidth; x++)
+                {
+                    // Generate a rectangle to draw to
+                    Rectangle destRect = new Rectangle(
+                        (int)(x * scale.X) + 1 + drawSpace.X,
+                        (int)(y * scale.Y) + 1 + drawSpace.Y,
+                        (int)scale.X + 1,
+                        (int)scale.Y + 1);
+
+                    // Pick what needs to be drawn
+                    switch (ground[y, x].Filled)
+                    {
+                        // If the tile is filled
+                        case true:
+                            switch (ground[y, x].Type)
+                            {
+                                // Rock
+                                case 0:
+                                    // Draw rock texture
+                                    spriteBatch.Draw(
+                                        textures["rock"],
+                                        destRect,
+                                        Color.White
+                                        );
+                                    break;
+                                // Coal
+                                case 1:
+                                    // Draw coal texture
+                                    spriteBatch.Draw(
+                                        textures["coal"],
+                                        destRect,
+                                        Color.White
+                                        );
+                                    break;
+                                // Oil
+                                case 2:
+                                    // Draw oil texture
+                                    spriteBatch.Draw(
+                                        textures["oil"],
+                                        destRect,
+                                        Color.White
+                                        );
+                                    break;
+                                // Gas
+                                case 3:
+                                    // Draw gas(?) texture
+                                    spriteBatch.Draw(
+                                        textures["gas"],
+                                        destRect,
+                                        Color.White
+                                        );
+                                    break;
+                            }
+                            break;
+
+                        // If the tile is not filled
+                        case false:
+                            // Draw background texture
+                            spriteBatch.Draw(
+                                textures["empty"],
+                                destRect,
+                                Color.White
+                                );
+                            break;
+                    }
+                }
+            }
         }
     }
 }
