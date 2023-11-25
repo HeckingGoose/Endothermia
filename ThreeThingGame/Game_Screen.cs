@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework.Input;
+using System.Diagnostics;
 
 namespace ThreeThingGame
 {
@@ -68,19 +69,19 @@ namespace ThreeThingGame
         }
 
         // Methods
-        public void RunLogic(float gameSpeed)
+        public void RunLogic(float gameSpeed, Keys[] KeysPressed)
         {
             // Run logic here
             Vector2 tempVelPlayer1 = player1.Velocity;
             Vector2 tempVelPlayer2 = player2.Velocity;
-            foreach (Keys key in Keyboard.GetState().GetPressedKeys())
+            foreach (Keys key in KeysPressed)
             {
                 switch (key)
                 {
                     case Keys.A:
                         tempVelPlayer1.X = -(gameSpeed * MOVESPEED);
                         break;
-                    case Keys.S:
+                    case Keys.D:
                         tempVelPlayer1.X = gameSpeed * MOVESPEED;
                         break;
                     case Keys.Left:
@@ -88,6 +89,9 @@ namespace ThreeThingGame
                         break;
                     case Keys.Right:
                         tempVelPlayer2.X = gameSpeed * MOVESPEED;
+                        break;
+                    case Keys.S:
+                        tempVelPlayer1.Y = (gameSpeed * MOVESPEED);
                         break;
 
                 }
@@ -98,17 +102,14 @@ namespace ThreeThingGame
             player1.Position += player1.Velocity;
             player2.Position += player2.Velocity;
 
+            cameraPosition.Y = (player1.Position.Y + player2.Position.Y) / 2;
+
         }
         public void RunGraphics(
             SpriteBatch spriteBatch,
             Dictionary<string, Texture2D> textures
             )
         {
-            foreach (Button button in buttons)
-            {
-                spriteBatch.Draw(button.Texture, button.Rect, button.BackColour);
-                spriteBatch.DrawString(button.Font, button.Text, new Vector2(button.Rect.X, button.Rect.Y), button.TextColour);
-            }
 
             // Draw test ground
             Ground.DrawGround(
