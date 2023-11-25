@@ -34,6 +34,13 @@
 /processorParam:TextureFormat=Compressed
 /build:Fonts/SWTxt_36.spritefont
 
+#begin Fonts/SWTxt_48.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/SWTxt_48.spritefont
+
 #begin Sprites/blackTitle.png
 /importer:TextureImporter
 /processor:TextureProcessor
