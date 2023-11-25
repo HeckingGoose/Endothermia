@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
 
 namespace ThreeThingGame
 {
@@ -17,7 +18,7 @@ namespace ThreeThingGame
 
         // VAR
         // Fonts
-        private SpriteFont SWTxt_36;
+        private Dictionary<string, SpriteFont> fonts;
 
         // Textures
         private Texture2D buttonTexture;
@@ -43,6 +44,7 @@ namespace ThreeThingGame
         {
             // Initialise values
             state = 0;
+            fonts = new Dictionary<string, SpriteFont>();
 
             // Initialise window size
             _graphics.PreferredBackBufferWidth = TARGET_WIDTH;
@@ -63,13 +65,21 @@ namespace ThreeThingGame
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // Load game content
-            SWTxt_36 = Content.Load<SpriteFont>(@"Fonts\SWTxt_36");
+            fonts.Add("SWTxt_12", Content.Load<SpriteFont>(@"Fonts\SWTxt_12"));
+            fonts.Add("SWTxt_24", Content.Load<SpriteFont>(@"Fonts\SWTxt_24"));
+            fonts.Add("SWTxt_36", Content.Load<SpriteFont>(@"Fonts\SWTxt_36"));
+
             buttonTexture = Content.Load<Texture2D>(@"Sprites\ButtonTexture");
             titleTexture = Content.Load<Texture2D>(@"Sprites\blackTitle");
 
 
             // Initialise menu screen
-            menuScreen = new Menu(ref _graphics, ref _spriteBatch, buttonTexture);
+            menuScreen = new Menu(
+                ref _graphics,
+                ref _spriteBatch,
+                buttonTexture,
+                fonts
+                );
         }
 
         protected override void Update(GameTime gameTime)
@@ -80,6 +90,10 @@ namespace ThreeThingGame
                     menuScreen.RunLogic(
                         ref state
                         );
+                    break;
+                case 1: // Intro screen
+                    break;
+                case 2: // Main game loop
                     break;
             }
 
@@ -98,9 +112,12 @@ namespace ThreeThingGame
                 case 0: // Menu screen
                     menuScreen.RunGraphics(
                         _spriteBatch,
-                        SWTxt_36,
                         titleTexture
                         );
+                    break;
+                case 1: // Intro screen
+                    break;
+                case 2: // Main game loop
                     break;
             }
 

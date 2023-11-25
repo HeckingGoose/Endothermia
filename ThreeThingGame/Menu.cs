@@ -20,24 +20,35 @@ namespace ThreeThingGame
 
 
         // Constructor
-        public Menu(ref GraphicsDeviceManager graphics, ref SpriteBatch spriteBatch, Texture2D texture)
+        public Menu(
+            ref GraphicsDeviceManager graphics,
+            ref SpriteBatch spriteBatch,
+            Texture2D buttonTexture,
+            Dictionary<string, SpriteFont> fonts
+            )
         {
             _graphics = graphics;
             _spriteBatch = spriteBatch;
             Button newGame = new Button(
-                "NEW GAME", 
-                false, 
-                texture, 
-                new Rectangle(355, 420, 250, 50), 
-                NewGameStart
+                text: "NEW GAME",
+                wordWrap: false,
+                font: fonts["SWTxt_24"],
+                textColour: Color.Black,
+                backColour: Color.White,
+                texture: buttonTexture,
+                rect: new Rectangle(355, 420, 250, 50),
+                onClick: NewGameStart
                 );
             buttons.Add(newGame);
             Button exitGame = new Button(
-                "X",
-                false,
-                texture,
-                new Rectangle(935, 0, 25, 25),
-                ExitGame
+                text: "X",
+                wordWrap: false,
+                font: fonts["SWTxt_12"],
+                textColour: Color.Red,
+                backColour: new Color(255, 200, 200, 255),
+                texture: buttonTexture,
+                rect: new Rectangle(935, 0, 25, 25),
+                onClick: ExitGame
                 );
             buttons.Add(exitGame);
         }
@@ -47,16 +58,16 @@ namespace ThreeThingGame
         {
             // Run logic here
         }
-        public void RunGraphics(SpriteBatch spriteBatch,
-            SpriteFont SWTxt_36,
+        public void RunGraphics(
+            SpriteBatch spriteBatch,
             Texture2D titleTexture
             )
         {
             spriteBatch.Draw(titleTexture, new Rectangle(280, 80, 400, 300), Color.White);
             foreach(Button button in buttons )
             {
-                spriteBatch.Draw(button.Texture, button.Rect, Color.White);
-                spriteBatch.DrawString(SWTxt_36, button.Text, new Vector2(button.Rect.X, button.Rect.Y), Color.Red);
+                spriteBatch.Draw(button.Texture, button.Rect, button.BackColour);
+                spriteBatch.DrawString(button.Font, button.Text, new Vector2(button.Rect.X, button.Rect.Y), button.TextColour);
             }
         }
 
