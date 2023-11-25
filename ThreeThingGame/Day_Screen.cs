@@ -11,7 +11,7 @@ namespace ThreeThingGame
     internal class Day_Screen
     {
         // Constants
-        private const double Skip_Time = 4;
+        private const double SKIP_TIME = 4;
 
         // External Variables
         private GraphicsDeviceManager _graphics;
@@ -19,13 +19,18 @@ namespace ThreeThingGame
 
         // Internal Variables
         private double time;
-        private Vector2 textSize;
         private string dayString;
+        private Vector2 textSize;
         private Vector2 textPosition;
 
 
         // Constructor
-        public Day_Screen(ref GraphicsDeviceManager graphics, ref SpriteBatch spriteBatch, Dictionary<string, SpriteFont> fonts, int day)
+        public Day_Screen(
+            ref GraphicsDeviceManager graphics,
+            ref SpriteBatch spriteBatch,
+            Dictionary<string, SpriteFont> fonts,
+            int day
+            )
         {
             _graphics = graphics;
             _spriteBatch = spriteBatch;
@@ -37,13 +42,16 @@ namespace ThreeThingGame
         }
 
         // Methods
-        public void RunLogic(double gameTime, ref uint state)
+        public void RunLogic(
+            double gameTime,
+            ref State.GameState state
+            )
         {
             // Run logic here
             time += gameTime;
-            if (time > Skip_Time)
+            if (time > SKIP_TIME)
             {
-                state = 5;
+                state = State.GameState.Game_Load;
             }
 
         }

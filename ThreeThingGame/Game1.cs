@@ -29,7 +29,7 @@ namespace ThreeThingGame
         private Vector2 scale;
 
         // Screens
-        private uint state;
+        private State.GameState state;
         private Menu_Screen menuScreen;
         private Intro_Screen introScreen;
         private Game_Screen gameScreen;
@@ -53,7 +53,7 @@ namespace ThreeThingGame
         protected override void Initialize()
         {
             // Initialise values
-            state = 0;
+            state = State.GameState.Menu_Main;
             fonts = new Dictionary<string, SpriteFont>();
             textures = new Dictionary<string, Texture2D>();
             mouseButtonsHeld = new bool[3];
@@ -115,35 +115,40 @@ namespace ThreeThingGame
 
             switch (state)
             {
-                case 0: // Menu screen
+                case State.GameState.Menu_Main:
                     menuScreen.RunLogic(
                         ref state,
                         mouseButtonsHeld,
                         mouseState
                         );
                     break;
-                case 1: // Load Intro Screen
+
+                case State.GameState.Intro_Load:
                     break;
-                case 2: // Intro screen
+
+                case State.GameState.Intro_Main:
                     introScreen.RunLogic(
                         );
                     break;
-                case 3: // Load day screen
+
+                case State.GameState.Day_Load:
                     dayScreen = new Day_Screen(
                         ref _graphics,
                         ref _spriteBatch,
                         fonts,
                         day
                         );
-                    state = 4;
+                    state = State.GameState.Day_Main;
                     break;
-                case 4: // Day screen
+
+                case State.GameState.Day_Main:
                     dayScreen.RunLogic(
                         gameTime.ElapsedGameTime.TotalSeconds,
                         ref state
                         );
                     break;
-                case 5: // Load main game loop
+
+                case State.GameState.Game_Load:
                     gameScreen = new Game_Screen(
                         ref _graphics,
                         ref _spriteBatch,
@@ -154,16 +159,20 @@ namespace ThreeThingGame
                         0.015f,
                         0.2f
                         );
+                    state = State.GameState.Game_Main;
                     break;
-                case 6: // Main game loop
+
+                case State.GameState.Game_Main:
                     gameScreen.RunLogic(
                         gameSpeed,
                         Keyboard.GetState().GetPressedKeys()
                         );
                     break;
-                case 7: // Load results screen
+
+                case State.GameState.DayEnd_Load:
                     break;
-                case 8: // Results screen
+
+                case State.GameState.DayEnd_Main:
                     // Increase day
                     break;
 
@@ -202,37 +211,44 @@ namespace ThreeThingGame
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
-
             // Begin draw
             _spriteBatch.Begin();
 
+            // Draw current screen
             switch (state)
             {
-                case 0: // Menu screen
+                case State.GameState.Menu_Main:
+                    GraphicsDevice.Clear(Color.CornflowerBlue);
                     menuScreen.RunGraphics(
                         _spriteBatch,
                         textures
                         );
                     break;
-                case 2: // Intro screen
-                    introScreen.RunGraphics(
-                        _spriteBatch
-                        );
-                    break;
-                case 6: // Main game loop
-                    gameScreen.RunGraphics(
-                        _spriteBatch,
-                        textures
-                        );
-                    break;
-                case 4: // Day screen
+
+                case State.GameState.Day_Main:
+                    GraphicsDevice.Clear(Color.Black);
                     dayScreen.RunGraphics(
                         _spriteBatch,
                         fonts
                         );
                     break;
-                case 8: // Results screen
+
+                case State.GameState.Intro_Main:
+                    GraphicsDevice.Clear(Color.CornflowerBlue);
+                    introScreen.RunGraphics(
+                        _spriteBatch
+                        );
+                    break;
+
+                case State.GameState.Game_Main:
+                    GraphicsDevice.Clear(Color.CornflowerBlue);
+                    gameScreen.RunGraphics(
+                        _spriteBatch,
+                        textures
+                        );
+                    break;
+                case State.GameState.DayEnd_Main:
+                    GraphicsDevice.Clear(Color.CornflowerBlue);
                     break;
             }
 

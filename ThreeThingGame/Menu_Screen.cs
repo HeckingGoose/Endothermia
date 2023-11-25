@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ThreeThingGame
 {
-    public class Menu_Screen
+    internal class Menu_Screen
     {
         // External Variables
         private GraphicsDeviceManager _graphics;
@@ -55,7 +55,7 @@ namespace ThreeThingGame
 
         // Methods
         public void RunLogic(
-            ref uint state,
+            ref State.GameState state,
             bool[] mouseButtonsHeld,
             MouseState mouseState
             )
@@ -91,12 +91,12 @@ namespace ThreeThingGame
             }
         }
 
-        private void NewGameStart(ref uint state)
+        private void NewGameStart(ref State.GameState state)
         {
-            state = 3;
+            state = State.GameState.Day_Load;
         }
 
-        private void ExitGame(ref uint state)
+        private void ExitGame(ref State.GameState state)
         {
             Environment.Exit(0);
         }

@@ -20,7 +20,7 @@ namespace ThreeThingGame
         private Rectangle _rect;
         private ClickEvent _onClick; 
         // Callback method
-        public delegate void ClickEvent(ref uint state);
+        public delegate void ClickEvent(ref State.GameState state);
 
         // Constructors
         public Button()
