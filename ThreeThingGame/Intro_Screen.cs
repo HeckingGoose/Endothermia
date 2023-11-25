@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ThreeThingGame
 {
-    internal class Intro_Screen : Game
+    internal class Intro_Screen
     {
         // External Variables
         private GraphicsDeviceManager _graphics;

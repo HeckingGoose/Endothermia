@@ -10,7 +10,7 @@ using System.Diagnostics;
 
 namespace ThreeThingGame
 {
-    internal class Game_Screen : Game
+    internal class Game_Screen
     {
         // Constants
         private const float MOVESPEED = 1;
@@ -90,9 +90,6 @@ namespace ThreeThingGame
                     case Keys.Right:
                         tempVelPlayer2.X = gameSpeed * MOVESPEED;
                         break;
-                    case Keys.S:
-                        tempVelPlayer1.Y = (gameSpeed * MOVESPEED);
-                        break;
 
                 }
             }
@@ -101,6 +98,9 @@ namespace ThreeThingGame
 
             player1.Position += player1.Velocity;
             player2.Position += player2.Velocity;
+
+            player1.Velocity = Vector2.Zero;
+            player2.Velocity = Vector2.Zero;
 
             cameraPosition.Y = (player1.Position.Y + player2.Position.Y) / 2;
 

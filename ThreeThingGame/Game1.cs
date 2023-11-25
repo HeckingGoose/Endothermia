@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace ThreeThingGame
 {
@@ -114,12 +115,6 @@ namespace ThreeThingGame
         {
             MouseState mouseState = Mouse.GetState();
 
-            // Patch
-            (int mouseX, int mouseY) mousePosition = (
-                mouseState.Position.X - Window.Position.X,
-                mouseState.Position.Y - Window.Position.Y
-                );
-
             float gameSpeed = (float)gameTime.ElapsedGameTime.TotalSeconds * TARGET_FRAMERATE;
 
             switch (state)
@@ -128,8 +123,7 @@ namespace ThreeThingGame
                     menuScreen.RunLogic(
                         ref state,
                         mouseButtonsHeld,
-                        mouseState,
-                        mousePosition
+                        mouseState
                         );
                     break;
                 case 1: // Intro screen
@@ -138,11 +132,13 @@ namespace ThreeThingGame
                     break;
                 case 2: // Main game loop
                     gameScreen.RunLogic(
-                        gameSpeed
+                        gameSpeed,
+                        Keyboard.GetState().GetPressedKeys()
                         );
                     break;
             }
-            
+
+
             if (mouseState.LeftButton == ButtonState.Pressed)
             {
                 mouseButtonsHeld[0] = true;

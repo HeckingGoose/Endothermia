@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ThreeThingGame
 {
-    public class Menu_Screen : Game
+    public class Menu_Screen
     {
         // External Variables
         private GraphicsDeviceManager _graphics;
@@ -57,18 +57,17 @@ namespace ThreeThingGame
         public void RunLogic(
             ref uint state,
             bool[] mouseButtonsHeld,
-            MouseState mouseState,
-            (int X, int Y) mousePosition
+            MouseState mouseState
             )
         {
 
             // Run logic here
             foreach(Button button in buttons)
             {
-                if (mousePosition.X >= button.Rect.X 
-                    && mousePosition.X <= button.Rect.X + button.Rect.Width
-                    && mousePosition.Y >= button.Rect.Y
-                    && mousePosition.Y <= button.Rect.Y + button.Rect.Height
+                if (mouseState.Position.X >= button.Rect.X 
+                    && mouseState.Position.X <= button.Rect.X + button.Rect.Width
+                    && mouseState.Position.Y >= button.Rect.Y
+                    && mouseState.Position.Y <= button.Rect.Y + button.Rect.Height
                     )
                 {
                     if (!mouseButtonsHeld[0] 
@@ -99,7 +98,6 @@ namespace ThreeThingGame
 
         private void ExitGame(ref uint state)
         {
-            Exit();
             Environment.Exit(0);
         }
     }
