@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace ThreeThingGame
 {
@@ -32,9 +33,13 @@ namespace ThreeThingGame
         private Menu_Screen menuScreen;
         private Intro_Screen introScreen;
         private Game_Screen gameScreen;
+        private Day_Screen dayScreen;
 
         // Mouse held
         private bool[] mouseButtonsHeld;
+
+        // Time tracking
+        private int day;
 
         // ENDVAR
 
@@ -52,6 +57,7 @@ namespace ThreeThingGame
             fonts = new Dictionary<string, SpriteFont>();
             textures = new Dictionary<string, Texture2D>();
             mouseButtonsHeld = new bool[3];
+            day = 1;
 
             // Initialise window size
             _graphics.PreferredBackBufferWidth = TARGET_WIDTH;
@@ -75,6 +81,7 @@ namespace ThreeThingGame
             fonts.Add("SWTxt_12", Content.Load<SpriteFont>(@"Fonts\SWTxt_12"));
             fonts.Add("SWTxt_24", Content.Load<SpriteFont>(@"Fonts\SWTxt_24"));
             fonts.Add("SWTxt_36", Content.Load<SpriteFont>(@"Fonts\SWTxt_36"));
+            fonts.Add("SWTxt_48", Content.Load<SpriteFont>(@"Fonts\SWTxt_48"));
 
             textures.Add("ButtonTexture", Content.Load<Texture2D>(@"Sprites\ButtonTexture"));
             textures.Add("TitleTexture", Content.Load<Texture2D>(@"Sprites\blackTitle"));
@@ -98,17 +105,6 @@ namespace ThreeThingGame
                 ref _spriteBatch
                 );
 
-            // Initialise game screen
-            gameScreen = new Game_Screen(
-                ref _graphics,
-                ref _spriteBatch,
-                19,
-                25,
-                0.05f,
-                0.025f,
-                0.015f,
-                0.2f
-                );
         }
 
         protected override void Update(GameTime gameTime)
@@ -126,16 +122,51 @@ namespace ThreeThingGame
                         mouseState
                         );
                     break;
-                case 1: // Intro screen
+                case 1: // Load Intro Screen
+                    break;
+                case 2: // Intro screen
                     introScreen.RunLogic(
                         );
                     break;
-                case 2: // Main game loop
+                case 3: // Load day screen
+                    dayScreen = new Day_Screen(
+                        ref _graphics,
+                        ref _spriteBatch,
+                        fonts,
+                        day
+                        );
+                    state = 4;
+                    break;
+                case 4: // Day screen
+                    dayScreen.RunLogic(
+                        gameTime.ElapsedGameTime.TotalSeconds,
+                        ref state
+                        );
+                    break;
+                case 5: // Load main game loop
+                    gameScreen = new Game_Screen(
+                        ref _graphics,
+                        ref _spriteBatch,
+                        19,
+                        25,
+                        0.05f,
+                        0.025f,
+                        0.015f,
+                        0.2f
+                        );
+                    break;
+                case 6: // Main game loop
                     gameScreen.RunLogic(
                         gameSpeed,
                         Keyboard.GetState().GetPressedKeys()
                         );
                     break;
+                case 7: // Load results screen
+                    break;
+                case 8: // Results screen
+                    // Increase day
+                    break;
+
             }
 
 
@@ -184,16 +215,24 @@ namespace ThreeThingGame
                         textures
                         );
                     break;
-                case 1: // Intro screen
+                case 2: // Intro screen
                     introScreen.RunGraphics(
                         _spriteBatch
                         );
                     break;
-                case 2: // Main game loop
+                case 6: // Main game loop
                     gameScreen.RunGraphics(
                         _spriteBatch,
                         textures
                         );
+                    break;
+                case 4: // Day screen
+                    dayScreen.RunGraphics(
+                        _spriteBatch,
+                        fonts
+                        );
+                    break;
+                case 8: // Results screen
                     break;
             }
 
