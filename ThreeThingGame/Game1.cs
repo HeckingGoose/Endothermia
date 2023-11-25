@@ -13,9 +13,10 @@ namespace ThreeThingGame
         private SpriteBatch _spriteBatch;
 
         // CONST
-        private const int TARGET_FRAMERATE = 60;
+        private const int TARGET_FRAMERATE = 240;
         private const int TARGET_WIDTH = 960;
         private const int TARGET_HEIGHT = 540;
+        private const int DAYTIME_SECONDS = 5;
         // ENDCONST
 
         // VAR
@@ -208,6 +209,8 @@ namespace ThreeThingGame
                     gameScreen = new Game_Screen(
                         ref _graphics,
                         ref _spriteBatch,
+                        DAYTIME_SECONDS,
+                        fonts,
                         19,
                         25,
                         0.05f,
@@ -220,7 +223,9 @@ namespace ThreeThingGame
 
                 case State.GameState.Game_Main:
                     gameScreen.RunLogic(
+                        ref state,
                         gameSpeed,
+                        gameTime.ElapsedGameTime.TotalSeconds,
                         keyboardState.GetPressedKeys(),
                         scale
                         );
@@ -304,7 +309,8 @@ namespace ThreeThingGame
                     gameScreen.RunGraphics(
                         _spriteBatch,
                         scale,
-                        textures
+                        textures,
+                        fonts
                         );
                     break;
                 case State.GameState.DayEnd_Main:

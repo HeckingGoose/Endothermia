@@ -20,17 +20,26 @@ namespace ThreeThingGame
         private SpriteBatch _spriteBatch;
 
         // Internal Variables
+        // General
+        private double timeLeft;
         private Ground ground;
         private Ground unplayableGround;
         private Vector2 cameraPosition;
-        private List<Button> buttons = new List<Button>();
+
+        // Players
         private Player player1;
         private Player player2;
+
+        // Time left
+        private string timeLeftPhrase;
+        private Vector2 timeLeftPos;
         
         // Constructor
         public Game_Screen(
             ref GraphicsDeviceManager graphics,
             ref SpriteBatch spriteBatch,
+            int dayTime,
+            Dictionary<string, SpriteFont> fonts,
             uint groundWidth,
             uint groundDepth,
             float coalDist,
@@ -42,6 +51,7 @@ namespace ThreeThingGame
             // Assign values
             _graphics = graphics;
             _spriteBatch = spriteBatch;
+            timeLeft = dayTime;
 
             // Create new players
             player1 = new Player(
@@ -83,18 +93,39 @@ namespace ThreeThingGame
 
             // Initialise camera position
             cameraPosition = Vector2.Zero;
+
+            // Create timeLeft phrase
+            timeLeftPhrase = "Until Nightfall:";
+            Vector2 phraseSize = fonts["SWTxt_24"].MeasureString(timeLeftPhrase);
+            timeLeftPos = new Vector2(
+                940 - phraseSize.X,
+                20
+                );
         }
 
         // Methods
         public void RunLogic(
+            ref State.GameState state,
             float gameSpeed,
+            double deltaTime,
             Keys[] KeysPressed,
             Vector2 scale
             )
         {
-            // Run logic here
+            // Handle game timer
+            timeLeft -= deltaTime;
+            
+            if (timeLeft < 0)
+            {
+                // Day has ended
+                state = State.GameState.DayEnd_Load;
+            }
+
+            // Cache player velocities
             Vector2 tempVelPlayer1 = player1.Velocity;
             Vector2 tempVelPlayer2 = player2.Velocity;
+
+            // Read keyboard input
             foreach (Keys key in KeysPressed)
             {
                 switch (key)
@@ -114,22 +145,28 @@ namespace ThreeThingGame
 
                 }
             }
+
+            // Set player velocities
             player1.Velocity = tempVelPlayer1;
             player2.Velocity = tempVelPlayer2;
 
+            // Apply player velocities
             player1.Position += player1.Velocity;
             player2.Position += player2.Velocity;
 
+            // Reset player velocities
             player1.Velocity = Vector2.Zero;
             player2.Velocity = Vector2.Zero;
 
+            // Calculate new camera Y position
             cameraPosition.Y = (player1.Position.Y + player2.Position.Y) / 2;
 
         }
         public void RunGraphics(
             SpriteBatch spriteBatch,
             Vector2 scale,
-            Dictionary<string, Texture2D> textures
+            Dictionary<string, Texture2D> textures,
+            Dictionary<string, SpriteFont> fonts
             )
         {
             // Draw unplayable ground
@@ -160,6 +197,46 @@ namespace ThreeThingGame
                     (int)(1000 * scale.Y)
                     ),
                 textures
+                );
+
+            // Draw timer
+            spriteBatch.DrawString(
+                fonts["SWTxt_24"],
+                timeLeftPhrase,
+                timeLeftPos * scale,
+                Color.White,
+                0,
+                Vector2.Zero,
+                Math.Min(scale.X, scale.Y),
+                0,
+                0
+                );
+
+            string timer = String.Empty;
+            if (timeLeft >= 10)
+            {
+                timer = $"{(int)timeLeft / 60}:{(int)(timeLeft % 60)}";
+            }
+            else
+            {
+                timer = $"{(int)timeLeft / 60}:0{(int)(timeLeft % 60)}";
+            }
+            Vector2 timerSize = fonts["SWTxt_24"].MeasureString(timer);
+            Vector2 timerPos = new Vector2(
+                940 - timerSize.X,
+                timeLeftPos.Y + 40
+                );
+
+            spriteBatch.DrawString(
+                fonts["SWTxt_24"],
+                timer,
+                timerPos * scale,
+                Color.White,
+                0,
+                Vector2.Zero,
+                Math.Min(scale.X, scale.Y),
+                0,
+                0
                 );
         }
     }
