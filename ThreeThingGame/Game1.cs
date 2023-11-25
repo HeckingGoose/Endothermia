@@ -19,6 +19,10 @@ namespace ThreeThingGame
         // Fonts
         private SpriteFont SWTxt_36;
 
+        // Textures
+        private Texture2D buttonTexture;
+        private Texture2D titleTexture;
+
         // Window scale tracking
         private Vector2 scale;
 
@@ -58,11 +62,14 @@ namespace ThreeThingGame
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // Initialise menu screen
-            menuScreen = new Menu(ref _graphics, ref _spriteBatch);
-
             // Load game content
             SWTxt_36 = Content.Load<SpriteFont>(@"Fonts\SWTxt_36");
+            buttonTexture = Content.Load<Texture2D>(@"Sprites\ButtonTexture");
+            titleTexture = Content.Load<Texture2D>(@"Sprites\blackTitle");
+
+
+            // Initialise menu screen
+            menuScreen = new Menu(ref _graphics, ref _spriteBatch, buttonTexture);
         }
 
         protected override void Update(GameTime gameTime)
@@ -71,6 +78,7 @@ namespace ThreeThingGame
             {
                 case 0: // Menu screen
                     menuScreen.RunLogic(
+                        ref state
                         );
                     break;
             }
@@ -90,7 +98,8 @@ namespace ThreeThingGame
                 case 0: // Menu screen
                     menuScreen.RunGraphics(
                         _spriteBatch,
-                        SWTxt_36
+                        SWTxt_36,
+                        titleTexture
                         );
                     break;
             }

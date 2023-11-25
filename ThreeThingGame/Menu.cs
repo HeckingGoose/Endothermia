@@ -28,7 +28,7 @@ namespace ThreeThingGame
                 "NEW GAME", 
                 false, 
                 texture, 
-                new Rectangle(325, 300, 250, 100), 
+                new Rectangle(355, 420, 250, 50), 
                 NewGameStart
                 );
             buttons.Add(newGame);
@@ -52,9 +52,12 @@ namespace ThreeThingGame
             Texture2D titleTexture
             )
         {
-            spriteBatch.DrawString(SWTxt_36, "Test text", new Vector2(10,10), Color.White);
-
-            spriteBatch.Draw(titleTexture, new Rectangle(320, 160, 400, 300), Color.White);
+            spriteBatch.Draw(titleTexture, new Rectangle(280, 80, 400, 300), Color.White);
+            foreach(Button button in buttons )
+            {
+                spriteBatch.Draw(button.Texture, button.Rect, Color.White);
+                spriteBatch.DrawString(SWTxt_36, button.Text, new Vector2(button.Rect.X, button.Rect.Y), Color.Red);
+            }
         }
 
         private void NewGameStart(ref uint state)
