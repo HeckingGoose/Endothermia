@@ -68,11 +68,13 @@ namespace ThreeThingGame
             float coalDist,
             float oilDist,
             float gasDist,
-            float clumpSum
+            float bedrockDist,
+            float clumpSum,
+            bool surfaceResources = false
             )
         {
             // Early out
-            if (coalDist + oilDist + gasDist + 3 * clumpSum > 1)
+            if (coalDist + oilDist + gasDist + bedrockDist + 4 * clumpSum > 1)
             {
                 // If the probabilities ever sum to be more than 1
                 return null;
@@ -84,8 +86,21 @@ namespace ThreeThingGame
             // Define new random
             Random rng = new Random();
 
-            // Fill the ground with tiles
-            for (int y = 0; y < depth; y++)
+            int offset = 0;
+
+            // If surface resources are disabled
+            if (!surfaceResources)
+            {
+                // Fill the first ground row with rock
+                for (int x = 0; x < width; x++)
+                {
+                    output[0, x] = new GroundTile(0);
+                }
+                offset = 1;
+            }
+
+            // Fill the rest of the ground with tiles
+            for (int y = offset; y < depth; y++)
             {
                 for (int x = 0; x < width; x++)
                 {
@@ -105,10 +120,13 @@ namespace ThreeThingGame
                                 case 3: // Gas
                                     clumpSums[2] = clumpSum;
                                     break;
+                                case 4: // Bedrock
+                                    clumpSums[3] = clumpSum;
+                                    break;
                             }
                         }
                     }
-                    float[] clumpSums = new float[3];
+                    float[] clumpSums = new float[4];
 
                     // Generate array of which tile types surround the current tile
                     if (y > 0)
@@ -157,6 +175,11 @@ namespace ThreeThingGame
                     {
                         output[y, x] = new GroundTile(3);
                     }
+                    // True if bedrock
+                    else if (randomValue < coalDist + clumpSums[0] + oilDist + clumpSums[1] + gasDist + clumpSums[2] + bedrockDist + clumpSums[3])
+                    {
+                        output[y, x] = new GroundTile(4);
+                    }
                     // True if rock
                     else
                     {
@@ -187,7 +210,7 @@ namespace ThreeThingGame
             )
         {// DONT FORGET TO APPLY DRAWSPACE XY OFFSETS
             // Calculate scale factors between screen space and ground space
-            Vector2 scale = new Vector2(
+            Vector2 innerScale = new Vector2(
                 drawSpace.Width / groundWidth,
                 drawSpace.Height / groundDepth
                 );
@@ -199,10 +222,11 @@ namespace ThreeThingGame
                 {
                     // Generate a rectangle to draw to
                     Rectangle destRect = new Rectangle(
-                        (int)(x * scale.X) + 1 + drawSpace.X,
-                        (int)(y * scale.Y) + 1 + drawSpace.Y,
-                        (int)scale.X + 1,
-                        (int)scale.Y + 1);
+                        (int)(x * innerScale.X) + drawSpace.X,
+                        (int)(y * innerScale.Y) + drawSpace.Y,
+                        (int)innerScale.X,
+                        (int)innerScale.Y
+                        );
 
                     // Pick what needs to be drawn
                     switch (ground[y, x].Filled)
@@ -247,6 +271,15 @@ namespace ThreeThingGame
                                         Color.White
                                         );
                                     break;
+                                // Bedrock
+                                case 4:
+                                    // Draw bedrock texture
+                                    spriteBatch.Draw(
+                                        textures["Bedrock"],
+                                        destRect,
+                                        Color.White
+                                        );
+                                    break;
                             }
                             break;
 
@@ -254,7 +287,7 @@ namespace ThreeThingGame
                         case false:
                             // Draw background texture
                             spriteBatch.Draw(
-                                textures["Empty"],
+                                textures["Empty"], // Missing texture!!!!
                                 destRect,
                                 Color.White
                                 );

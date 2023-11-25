@@ -65,6 +65,7 @@ namespace ThreeThingGame
         }
         public void RunGraphics(
             SpriteBatch spriteBatch,
+            Vector2 scale,
             Dictionary<string, SpriteFont> fonts
             )
         {
@@ -72,8 +73,13 @@ namespace ThreeThingGame
             spriteBatch.DrawString(
                 fonts["SWTxt_48"],
                 dayString,
-                textPosition,
-                Color.White
+                textPosition * scale,
+                Color.White,
+                0,
+                Vector2.Zero,
+                Math.Min(scale.X, scale.Y),
+                0,
+                0
                 );
         }
     }

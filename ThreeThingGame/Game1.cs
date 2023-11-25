@@ -93,9 +93,11 @@ namespace ThreeThingGame
             textures.Add("ButtonTexture", Content.Load<Texture2D>(@"Sprites\ButtonTexture"));
             textures.Add("TitleTexture", Content.Load<Texture2D>(@"Sprites\blackTitle"));
             textures.Add("Coal", Content.Load<Texture2D>(@"Sprites\coal"));
-            textures.Add("Oil", Content.Load<Texture2D>(@"Sprites\Oil_Full"));
+            textures.Add("Oil", Content.Load<Texture2D>(@"Sprites\oilFull"));
             textures.Add("Gas", Content.Load<Texture2D>(@"Sprites\gas"));
             textures.Add("Rock", Content.Load<Texture2D>(@"Sprites\rock"));
+            textures.Add("Bedrock", Content.Load<Texture2D>(@"Sprites\bedrock"));
+            textures.Add("Empty", Content.Load<Texture2D>(@"Sprites\empty"));
 
 
             // Initialise menu screen
@@ -167,7 +169,8 @@ namespace ThreeThingGame
                     menuScreen.RunLogic(
                         ref state,
                         mouseButtonsHeld,
-                        mouseState
+                        mouseState,
+                        scale
                         );
                     break;
 
@@ -218,7 +221,8 @@ namespace ThreeThingGame
                 case State.GameState.Game_Main:
                     gameScreen.RunLogic(
                         gameSpeed,
-                        keyboardState.GetPressedKeys()
+                        keyboardState.GetPressedKeys(),
+                        scale
                         );
                     break;
 
@@ -231,7 +235,7 @@ namespace ThreeThingGame
 
             }
 
-
+            // Update if mouse is held
             if (mouseState.LeftButton == ButtonState.Pressed)
             {
                 mouseButtonsHeld[0] = true;
@@ -274,6 +278,7 @@ namespace ThreeThingGame
                     GraphicsDevice.Clear(Color.CornflowerBlue);
                     menuScreen.RunGraphics(
                         _spriteBatch,
+                        scale,
                         textures
                         );
                     break;
@@ -282,6 +287,7 @@ namespace ThreeThingGame
                     GraphicsDevice.Clear(Color.Black);
                     dayScreen.RunGraphics(
                         _spriteBatch,
+                        scale,
                         fonts
                         );
                     break;
@@ -297,6 +303,7 @@ namespace ThreeThingGame
                     GraphicsDevice.Clear(Color.CornflowerBlue);
                     gameScreen.RunGraphics(
                         _spriteBatch,
+                        scale,
                         textures
                         );
                     break;

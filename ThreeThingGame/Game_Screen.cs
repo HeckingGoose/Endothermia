@@ -21,6 +21,7 @@ namespace ThreeThingGame
 
         // Internal Variables
         private Ground ground;
+        private Ground unplayableGround;
         private Vector2 cameraPosition;
         private List<Button> buttons = new List<Button>();
         private Player player1;
@@ -50,14 +51,30 @@ namespace ThreeThingGame
                 1
                 );
 
-            // Create ground
+            // Create grounds
+            unplayableGround = new Ground(
+                Ground.GenerateGround(
+                    5,
+                    25,
+                    0f,
+                    0f,
+                    0f,
+                    1f,
+                    0f,
+                    true
+                    ),
+                5,
+                25
+                );
+
             ground = new Ground(
                 Ground.GenerateGround(
                     groundWidth,
                     groundDepth,
                     coalDist,
-                    oilDist,
-                    gasDist,
+                    0f, //oilDist, disable oil and gas for now
+                    0f, //gasDist,
+                    0f,
                     clumpSum
                     ),
                 groundWidth,
@@ -71,7 +88,9 @@ namespace ThreeThingGame
         // Methods
         public void RunLogic(
             float gameSpeed,
-            Keys[] KeysPressed)
+            Keys[] KeysPressed,
+            Vector2 scale
+            )
         {
             // Run logic here
             Vector2 tempVelPlayer1 = player1.Velocity;
@@ -109,17 +128,37 @@ namespace ThreeThingGame
         }
         public void RunGraphics(
             SpriteBatch spriteBatch,
+            Vector2 scale,
             Dictionary<string, Texture2D> textures
             )
         {
+            // Draw unplayable ground
+            Ground.DrawGround(
+                spriteBatch,
+                unplayableGround.Tiles,
+                unplayableGround.Width,
+                unplayableGround.Depth,
+                new Rectangle(
+                    0,
+                    (int)((300 - cameraPosition.Y) * scale.Y),
+                    (int)(200 * scale.X),
+                    (int)(1000 * scale.Y)
+                    ),
+                textures
+                );
 
-            // Draw test ground
+            // Draw game ground
             Ground.DrawGround(
                 spriteBatch,
                 ground.Tiles,
                 ground.Width,
                 ground.Depth,
-                new Rectangle(200, 300 - (int)cameraPosition.Y, 760, 1000),
+                new Rectangle(
+                    (int)(200 * scale.X),
+                    (int)((300 - cameraPosition.Y) * scale.Y),
+                    (int)(760 * scale.X),
+                    (int)(1000 * scale.Y)
+                    ),
                 textures
                 );
         }
