@@ -22,8 +22,10 @@ namespace ThreeThingGame
         private const uint TERMINAL_VELOCITY = 3;
         private const uint COAL_CAPACITY = 5;
         private const float TARGET_TEMP = 38f;
-        private const float FREEZE_RATE = 0.002f;
+        private const float FREEZE_RATE = 0.003f;
         private const float FATAL_TEMP = 33f;
+        private const double SPRITE_RESET_TIME_1 = 0.1f;
+        private const double SPRITE_RESET_TIME_2 = 0.1f;
 
         // External Variables
         private GraphicsDeviceManager _graphics;
@@ -39,6 +41,8 @@ namespace ThreeThingGame
         private Vector2 snowPosition;
         private float snowSpeed;
         private Random rng;
+        private double resetTime1 = SPRITE_RESET_TIME_1;
+        private double resetTime2 = SPRITE_RESET_TIME_2;
 
         // Snow step timers
         private double stepTimeLeft_1 = 0;
@@ -153,6 +157,8 @@ namespace ThreeThingGame
             ref State.GameState state,
             Dictionary<Keys, bool> keyMap,
             Dictionary<string, SoundEffect> soundEffects,
+            Dictionary<string, Texture2D> textures,
+            ref int totalCoal,
             float gameSpeed,
             double deltaTime,
             Keys[] KeysPressed
@@ -192,6 +198,20 @@ namespace ThreeThingGame
                 {
                     player2.Temperature += 0.3f;
                 }
+            }
+
+            if (player1.Temperature < FATAL_TEMP)
+            {
+                player1.Health -= (float)deltaTime * 0.5f;
+            }
+            if (player2.Temperature < FATAL_TEMP)
+            {
+                player2.Health -= (float)deltaTime * 0.5f;
+            }
+
+            if (player1.Health < 0 || player2.Health < 0)
+            {
+                state = State.GameState.Death_Load;
             }
 
             // If player is walking on the surface (uses hardcoded values, ew)
@@ -237,151 +257,54 @@ namespace ThreeThingGame
                     soundEffects[$"Snow_Walk_{i}"].Play();
                 }
             }
+            // Set player to default state
+            if (resetTime1 <= 0)
+            {
+                player1.SetPlayerState(
+                    Player.State.Idle,
+                    textures
+                    );
+            }
+            else
+            {
+                resetTime1 -= deltaTime;
+            }
+            
+            if (resetTime2 <= 0)
+            {
+                player2.SetPlayerState(
+                Player.State.Idle,
+                textures
+                );
+            }
+            else
+            {
+                resetTime2 -= deltaTime;
+            }
 
             // Read keyboard input
             foreach (Keys key in KeysPressed)
             {
                 switch (key)
                 {
-                    case Keys.A:
-                        tempVelPlayer1.X = -(gameSpeed * MAX_SPEED);
-
-                        if (!keyMap[Keys.A])
-                        {
-                            player1.HeldCoal = MineTile(
-                                soundEffects,
-                                player1,
-                                ground,
-                                new Vector2(
-                                    player1.Position.X,
-                                    player1.Position.Y + player1.Size.Y / 2
-                                    ),
-                                new Vector2(
-                                    player1.Size.X / 2,
-                                    player1.Size.Y / 2
-                                    ),
-                                ref rng
-                                );
-                        }
-                        break;
-                    case Keys.D:
-                        tempVelPlayer1.X = gameSpeed * MAX_SPEED;
-
-                        if (!keyMap[Keys.D])
-                        {
-                            player1.HeldCoal = MineTile(
-                                soundEffects,
-                                player1,
-                                ground,
-                                new Vector2(
-                                    player1.Position.X + player1.Size.X,
-                                    player1.Position.Y + player1.Size.Y / 2
-                                    ),
-                                new Vector2(
-                                    player1.Size.X / 2,
-                                    player1.Size.Y / 2
-                                    ),
-                                ref rng
-                                );
-                        }
-                        break;
-                    case Keys.S:
-                        // P1 dig down
-
-                        // If key not held
-                        if (!keyMap[Keys.S])
-                        {
-                            player1.HeldCoal = MineTile(
-                                soundEffects,
-                                player1,
-                                ground,
-                                new Vector2(
-                                    player1.Position.X + player1.Size.X / 2,
-                                    player1.Position.Y + player1.Size.Y
-                                    ),
-                                new Vector2(
-                                    player1.Size.X / 2,
-                                    player1.Size.X / 2
-                                    ),
-                                ref rng
-                                );
-                        }
-                        break;
-                    case Keys.Left:
-                        tempVelPlayer2.X = -(gameSpeed * MAX_SPEED);
-
-                        if (!keyMap[Keys.Left])
-                        {
-                            player2.HeldCoal = MineTile(
-                                soundEffects,
-                                player2,
-                                ground,
-                                new Vector2(
-                                    player2.Position.X,
-                                    player2.Position.Y + player2.Size.Y / 2
-                                    ),
-                                new Vector2(
-                                    player2.Size.X / 2,
-                                    player2.Size.Y / 2
-                                    ),
-                                ref rng
-                                );
-                        }
-                        break;
-                    case Keys.Right:
-                        tempVelPlayer2.X = gameSpeed * MAX_SPEED;
-
-                        if (!keyMap[Keys.Right])
-                        {
-                            player2.HeldCoal = MineTile(
-                                soundEffects,
-                                player2,
-                                ground,
-                                new Vector2(
-                                    player2.Position.X + player2.Size.X,
-                                    player2.Position.Y + player2.Size.Y / 2
-                                    ),
-                                new Vector2(
-                                    player2.Size.X / 2,
-                                    player2.Size.Y / 2
-                                    ),
-                                ref rng
-                                );
-                        }
-                        break;
-                    case Keys.Down:
-                        // P2 dig down
-
-                        // If key not held
-                        if (!keyMap[Keys.Down])
-                        {
-                            player2.HeldCoal = MineTile(
-                                soundEffects,
-                                player2,
-                                ground,
-                                new Vector2(
-                                    player2.Position.X + player2.Size.X / 2,
-                                    player2.Position.Y + player2.Size.Y
-                                    ),
-                                new Vector2(
-                                    player2.Size.X / 2,
-                                    player2.Size.X / 2
-                                    ),
-                                ref rng
-                                );
-                        }
-                        break;
                     case Keys.W:
                         // P1 go up
 
                         if (player1.Position.Y + player1.Size.Y > 300)
                         {
                             tempVelPlayer1.Y = -(gameSpeed * MAX_SPEED);
+                            player2.SetPlayerState(
+                                Player.State.Climbing,
+                                textures
+                                );
+                            resetTime1 = SPRITE_RESET_TIME_1;
                         }
 
-                        if (!keyMap[Keys.W])
+                        if (!keyMap[Keys.W] && player1.Velocity.Y == 0)
                         {
-                            player1.HeldCoal = MineTile(
+                            uint heldCoal = player1.HeldCoal;
+                            bool success = MineTile(
+                                ref heldCoal,
                                 soundEffects,
                                 player1,
                                 ground,
@@ -395,6 +318,288 @@ namespace ThreeThingGame
                                     ),
                                 ref rng
                                 );
+                            player1.HeldCoal = heldCoal;
+
+                            if (success)
+                            {
+                                player1.SetPlayerState(
+                                    Player.State.Mining_Up,
+                                    textures
+                                    );
+                                resetTime1 = SPRITE_RESET_TIME_1;
+                            }
+                        }
+                        break;
+                    case Keys.A:
+                        tempVelPlayer1.X = -(gameSpeed * MAX_SPEED);
+
+                        if (!keyMap[Keys.A] && player1.Velocity.Y == 0)
+                        {
+                            uint heldCoal = player1.HeldCoal;
+                            bool success = MineTile(
+                                ref heldCoal,
+                                soundEffects,
+                                player1,
+                                ground,
+                                new Vector2(
+                                    player1.Position.X,
+                                    player1.Position.Y + player1.Size.Y / 2
+                                    ),
+                                new Vector2(
+                                    player1.Size.X / 2,
+                                    player1.Size.Y / 2
+                                    ),
+                                ref rng
+                                );
+                            player1.HeldCoal = heldCoal;
+
+                            if (success)
+                            {
+                                player1.SetPlayerState(
+                                    Player.State.Mining_Left,
+                                    textures
+                                    );
+                                resetTime1 = SPRITE_RESET_TIME_1;
+                            }
+                        }
+                        break;
+                    case Keys.D:
+                        tempVelPlayer1.X = gameSpeed * MAX_SPEED;
+
+                        if (!keyMap[Keys.D] && player1.Velocity.Y == 0)
+                        {
+                            uint heldCoal = player1.HeldCoal;
+                            bool success = MineTile(
+                                ref heldCoal,
+                                soundEffects,
+                                player1,
+                                ground,
+                                new Vector2(
+                                    player1.Position.X + player1.Size.X,
+                                    player1.Position.Y + player1.Size.Y / 2
+                                    ),
+                                new Vector2(
+                                    player1.Size.X / 2,
+                                    player1.Size.Y / 2
+                                    ),
+                                ref rng
+                                );
+                            player1.HeldCoal = heldCoal;
+
+                            if (success)
+                            {
+                                player1.SetPlayerState(
+                                    Player.State.Mining_Right,
+                                    textures
+                                    );
+                                resetTime1 = SPRITE_RESET_TIME_1;
+                            }
+                        }
+                        break;
+                    case Keys.S:
+                        // P1 dig down
+
+                        // If key not held
+                        if (!keyMap[Keys.S] && player1.Velocity.Y == 0)
+                        {
+                            uint heldCoal = player1.HeldCoal;
+                            bool success = MineTile(
+                                ref heldCoal,
+                                soundEffects,
+                                player1,
+                                ground,
+                                new Vector2(
+                                    player1.Position.X + player1.Size.X / 2,
+                                    player1.Position.Y + player1.Size.Y
+                                    ),
+                                new Vector2(
+                                    player1.Size.X / 2,
+                                    player1.Size.X / 2
+                                    ),
+                                ref rng
+                                );
+                            player1.HeldCoal = heldCoal;
+
+                            if (success)
+                            {
+                                player1.SetPlayerState(
+                                    Player.State.Mining_Down,
+                                    textures
+                                    );
+                                resetTime1 = SPRITE_RESET_TIME_1;
+                            }
+                        }
+                        break;
+                    case Keys.Up:
+                        // P1 go up
+
+                        if (player2.Position.Y + player2.Size.Y > 300)
+                        {
+                            tempVelPlayer2.Y = -(gameSpeed * MAX_SPEED);
+                            player2.SetPlayerState(
+                                Player.State.Climbing,
+                                textures
+                                );
+                            resetTime2 = SPRITE_RESET_TIME_2;
+                        }
+
+                        if (!keyMap[Keys.Up] && player2.Velocity.Y == 0)
+                        {
+                            uint heldCoal = player2.HeldCoal;
+                            bool success = MineTile(
+                                ref heldCoal,
+                                soundEffects,
+                                player2,
+                                ground,
+                                new Vector2(
+                                    player2.Position.X + player2.Size.X / 2,
+                                    player2.Position.Y
+                                    ),
+                                new Vector2(
+                                    player2.Size.X / 2,
+                                    player2.Size.X / 2
+                                    ),
+                                ref rng
+                                );
+                            player2.HeldCoal = heldCoal;
+
+                            if (success)
+                            {
+                                player2.SetPlayerState(
+                                    Player.State.Mining_Up,
+                                    textures
+                                    );
+                                resetTime2 = SPRITE_RESET_TIME_2;
+                            }
+                        }
+                        break;
+                    case Keys.Left:
+                        tempVelPlayer2.X = -(gameSpeed * MAX_SPEED);
+
+                        if (!keyMap[Keys.Left] && player2.Velocity.Y == 0)
+                        {
+                            uint heldCoal = player2.HeldCoal;
+                            bool success = MineTile(
+                                ref heldCoal,
+                                soundEffects,
+                                player2,
+                                ground,
+                                new Vector2(
+                                    player2.Position.X,
+                                    player2.Position.Y + player2.Size.Y / 2
+                                    ),
+                                new Vector2(
+                                    player2.Size.X / 2,
+                                    player2.Size.Y / 2
+                                    ),
+                                ref rng
+                                );
+                            player2.HeldCoal = heldCoal;
+
+                            if (success)
+                            {
+                                player2.SetPlayerState(
+                                    Player.State.Mining_Left,
+                                    textures
+                                    );
+                                resetTime2 = SPRITE_RESET_TIME_2;
+                            }
+                        }
+                        break;
+                    case Keys.Right:
+                        tempVelPlayer2.X = gameSpeed * MAX_SPEED;
+
+                        if (!keyMap[Keys.Right] && player2.Velocity.Y == 0)
+                        {
+                            uint heldCoal = player2.HeldCoal;
+                            bool success = MineTile(
+                                ref heldCoal,
+                                soundEffects,
+                                player2,
+                                ground,
+                                new Vector2(
+                                    player2.Position.X + player2.Size.X,
+                                    player2.Position.Y + player2.Size.Y / 2
+                                    ),
+                                new Vector2(
+                                    player2.Size.X / 2,
+                                    player2.Size.Y / 2
+                                    ),
+                                ref rng
+                                );
+                            player2.HeldCoal = heldCoal;
+
+                            if (success)
+                            {
+                                player2.SetPlayerState(
+                                    Player.State.Mining_Right,
+                                    textures
+                                    );
+                                resetTime2 = SPRITE_RESET_TIME_2;
+                            }
+                        }
+                        break;
+                    case Keys.Down:
+                        // P2 dig down
+
+                        // If key not held
+                        if (!keyMap[Keys.Down] && player2.Velocity.Y == 0)
+                        {
+                            uint heldCoal = player2.HeldCoal;
+                            bool success = MineTile(
+                                ref heldCoal,
+                                soundEffects,
+                                player2,
+                                ground,
+                                new Vector2(
+                                    player2.Position.X + player2.Size.X / 2,
+                                    player2.Position.Y + player2.Size.Y
+                                    ),
+                                new Vector2(
+                                    player2.Size.X / 2,
+                                    player2.Size.X / 2
+                                    ),
+                                ref rng
+                                );
+                            player2.HeldCoal = heldCoal;
+
+                            if (success)
+                            {
+                                player2.SetPlayerState(
+                                    Player.State.Mining_Down,
+                                    textures
+                                    );
+                                resetTime2 = SPRITE_RESET_TIME_2;
+                            }
+                        }
+                        break;
+
+                    case Keys.E:
+                        if (!keyMap[Keys.E])
+                        {
+                            if (player1.Position.X + player1.Size.X / 2 < 100) // If P1 near house
+                            {
+                                state = State.GameState.DayEnd_Load;
+                            }
+                            else if (player1.Position.X + player1.Size.X / 2 < 200) // If P1 near coal deposit
+                            {
+                                totalCoal += (int)player1.HeldCoal;
+                                player1.HeldCoal = 0;
+                            }
+                        }
+                        break;
+                    case Keys.RightControl:
+                        if (!keyMap[Keys.RightControl])
+                        {
+                            if (player2.Position.X + player2.Size.X / 2 < 100) // If P2 near house
+                            {
+                                state = State.GameState.DayEnd_Load;
+                            }
+                            else if (player2.Position.X + player2.Size.X / 2 < 200) // If P2 near coal deposit
+                            {
+                                totalCoal += (int)player2.HeldCoal;
+                                player2.HeldCoal = 0;
+                            }
                         }
                         break;
                 }
@@ -819,6 +1024,76 @@ namespace ThreeThingGame
                 0,
                 0
                 );
+
+            // Draw interaction text
+            if (player1.Position.X + player1.Size.X / 2 < 100) // If P1 near house
+            {
+                spriteBatch.DrawString(
+                    fonts["SWTxt_12"],
+                    "Press 'e' to end early",
+                    new Vector2(
+                        player1.Position.X * scale.X,
+                        (player1.Position.Y - 25) * scale.Y
+                        ),
+                    Color.White,
+                    0,
+                    Vector2.Zero,
+                    minScale,
+                    0,
+                    0
+                    );
+            }
+            else if (player1.Position.X + player1.Size.X / 2 < 200) // If P1 near coal deposit
+            {
+                spriteBatch.DrawString(
+                    fonts["SWTxt_12"],
+                    "Press 'e' to deposit coal",
+                    new Vector2(
+                        player1.Position.X * scale.X,
+                        (player1.Position.Y - 25) * scale.Y
+                        ),
+                    Color.White,
+                    0,
+                    Vector2.Zero,
+                    minScale,
+                    0,
+                    0
+                    );
+            }
+            if (player2.Position.X + player2.Size.X / 2 < 100) // If P2 near house
+            {
+                spriteBatch.DrawString(
+                    fonts["SWTxt_12"],
+                    "Press 'RCTRL' to end early",
+                    new Vector2(
+                        player2.Position.X * scale.X,
+                        (player2.Position.Y - 12) * scale.Y
+                        ),
+                    Color.White,
+                    0,
+                    Vector2.Zero,
+                    minScale,
+                    0,
+                    0
+                    );
+            }
+            else if (player2.Position.X + player2.Size.X / 2 < 200) // If P2 near coal deposit
+            {
+                spriteBatch.DrawString(
+                    fonts["SWTxt_12"],
+                    "Press 'RCTRL' to deposit coal",
+                    new Vector2(
+                        player2.Position.X * scale.X,
+                        (player2.Position.Y - 12) * scale.Y
+                        ),
+                    Color.White,
+                    0,
+                    Vector2.Zero,
+                    minScale,
+                    0,
+                    0
+                    );
+            }
         }
         private static bool LimitToBound(
             Player player,
@@ -901,9 +1176,8 @@ namespace ThreeThingGame
                 0
                 );
         }
-        private static uint MineTile(Dictionary<string, SoundEffect> soundEffects, Player player, Ground ground, Vector2 point, Vector2 range, ref Random rng)
+        private static bool MineTile(ref uint heldCoal, Dictionary<string, SoundEffect> soundEffects, Player player, Ground ground, Vector2 point, Vector2 range, ref Random rng)
         {
-            uint heldCoal = player.HeldCoal;
 
             (int y, int x) tile = Ground.GetNearestTileToPoint(
                 point,
@@ -934,8 +1208,9 @@ namespace ThreeThingGame
                         break;
                 }
                 soundEffects[$"Pick_Hit_{rng.Next(4)}"].Play();
+                return true;
             }
-            return heldCoal;
+            return false;
         }
     }
 }

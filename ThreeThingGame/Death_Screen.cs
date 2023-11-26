@@ -6,12 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework.Input;
-using static ThreeThingGame.Player;
-using System.Reflection;
 
 namespace ThreeThingGame
 {
-    internal class Intro_Screen
+    internal class Death_Screen
     {
         // External Variables
         private GraphicsDeviceManager _graphics;
@@ -22,36 +20,30 @@ namespace ThreeThingGame
 
 
         // Constructor
-        public Intro_Screen(
+        public Death_Screen(
             ref GraphicsDeviceManager graphics,
             ref SpriteBatch spriteBatch,
             Dictionary<string, SpriteFont> fonts,
             Dictionary<string, Texture2D> textures
             )
         {
-            _graphics = graphics;
-            _spriteBatch = spriteBatch;
-
-            Button continueButton = new Button(
-                "Play",
+            Button quitButton = new Button(
+                "Quit",
                 false,
                 Color.Black,
                 Color.White,
                 fonts["SWTxt_24"],
                 textures["ButtonTexture"],
                 new Rectangle(
-                    740,
-                    470,
-                    200,
+                    430,
+                    375,
+                    100,
                     50
                     ),
-                GoToDay
+                Quit
                 );
-
-            buttons.Add(continueButton);
+            buttons.Add(quitButton);
         }
-
-        // Methods
         public void RunLogic(
             ref State.GameState state,
             bool[] mouseButtonsHeld,
@@ -78,89 +70,22 @@ namespace ThreeThingGame
         public void RunGraphics(
             SpriteBatch spriteBatch,
             Dictionary<string, SpriteFont> fonts,
-            Vector2 scale
+            Vector2 scale,
+            string deathText
             )
         {
             float minScale = Math.Min(scale.X, scale.Y);
-            float spacing_36 = fonts["SWTxt_36"].MeasureString("A").Y + 2;
-            float spacing_24 = fonts["SWTxt_24"].MeasureString("A").Y + 2;
+
+            Vector2 length = fonts["SWTxt_48"].MeasureString(deathText);
 
             // Draw some text
             spriteBatch.DrawString(
-                fonts["SWTxt_36"],
-                "Good Morning,",
-                new Vector2(10, 10),
-                Color.White,
-                0,
-                Vector2.Zero,
-                minScale,
-                0,
-                0
-                );
-
-            spriteBatch.DrawString(
-                fonts["SWTxt_24"],
-                "Welcome to your new home for the next 30",
-                new Vector2(10, 10 + spacing_36),
-                Color.White,
-                0,
-                Vector2.Zero,
-                minScale,
-                0,
-                0
-                );
-
-            spriteBatch.DrawString(
-                fonts["SWTxt_24"],
-                "days. During this time you will be",
-                new Vector2(10, 10 + spacing_36 + spacing_24),
-                Color.White,
-                0,
-                Vector2.Zero,
-                minScale,
-                0,
-                0
-                );
-            spriteBatch.DrawString(
-                fonts["SWTxt_24"],
-                "mining coal to heat your home.",
-                new Vector2(10, 10 + spacing_36 + spacing_24 * 2),
-                Color.White,
-                0,
-                Vector2.Zero,
-                minScale,
-                0,
-                0
-                );
-
-            spriteBatch.DrawString(
-                fonts["SWTxt_24"],
-                "We're also obligated to mention that you",
-                new Vector2(10, 10 + spacing_36 + spacing_24 * 4),
-                Color.White,
-                0,
-                Vector2.Zero,
-                minScale,
-                0,
-                0
-                );
-
-            spriteBatch.DrawString(
-                fonts["SWTxt_24"],
-                "have a quota from us to meet every day.",
-                new Vector2(10, 10 + spacing_36 + spacing_24 * 5),
-                Color.White,
-                0,
-                Vector2.Zero,
-                minScale,
-                0,
-                0
-                );
-
-            spriteBatch.DrawString(
-                fonts["SWTxt_36"],
-                "- Management",
-                new Vector2(30, 10 + spacing_36 + spacing_24 * 6 + 20),
+                fonts["SWTxt_48"],
+                deathText,
+                new Vector2(
+                    480 - length.X / 2,
+                    200
+                ),
                 Color.White,
                 0,
                 Vector2.Zero,
@@ -194,9 +119,9 @@ namespace ThreeThingGame
                     );
             }
         }
-        private void GoToDay(ref State.GameState state)
+            private void Quit(ref State.GameState state)
         {
-            state = State.GameState.Day_Load;
+            Environment.Exit(0);
         }
     }
 }

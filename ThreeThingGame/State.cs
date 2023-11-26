@@ -19,7 +19,9 @@ namespace ThreeThingGame
             Game_Load,
             Game_Main,
             DayEnd_Load,
-            DayEnd_Main
+            DayEnd_Main,
+            Death_Load,
+            Death_Main
         }
     }
 }

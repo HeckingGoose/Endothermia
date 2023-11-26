@@ -11,7 +11,7 @@ namespace ThreeThingGame
     internal class Player
     {
         // Variables
-        private uint _health;
+        private float _health;
         private float _temperature;
         private string _ID;
         private uint _heldCoal;
@@ -67,7 +67,7 @@ namespace ThreeThingGame
             _state = State.Idle;
         }
         public Player(
-            uint health,
+            float health,
             float temperature,
             string ID,
             uint coalCapacity,
@@ -89,37 +89,8 @@ namespace ThreeThingGame
             _state = State.Idle;
         }
 
-        //Static Methods
-        public static Texture2D SetTexture(
-            Player player,
-            Dictionary<string, Texture2D> textures
-            )
-        {
-            switch (player.PlayerState)
-            {
-                case State.Climbing:
-                    player.Texture = textures[$"{player.ID}_Climb"];
-                    break;
-                case State.Mining_Right:
-                    player.Texture = textures[$"{player.ID}_Mine_Right"];
-                    break;
-                case State.Mining_Left:
-                    player.Texture = textures[$"{player.ID}_Mine_Left"];
-                    break;
-                case State.Mining_Down:
-                    player.Texture = textures[$"{player.ID}_Mine_Down"];
-                    break;
-                case State.Mining_Up:
-                    player.Texture = textures[$"{player.ID}_Mine_Up"];
-                    break;
-                case State.Idle:
-                    player.Texture = textures[$"{player.ID}_Front"];
-                    break;
-            }
-        }
-
         // Methods
-        public uint Health
+        public float Health
         {
             get { return _health; }
             set { _health = value; }
@@ -175,7 +146,34 @@ namespace ThreeThingGame
         public State PlayerState
         {
             get { return _state; }
-            set { _state = value; }
+        }
+        public void SetPlayerState(State state, Dictionary<string, Texture2D> textures)
+        {
+            // Assign player state
+            _state = state;
+
+            // Update texture
+            switch (PlayerState)
+            {
+                case State.Climbing:
+                    Texture = textures[$"{ID}_Climb"];
+                    break;
+                case State.Mining_Right:
+                    Texture = textures[$"{ID}_Mine_Right"];
+                    break;
+                case State.Mining_Left:
+                    Texture = textures[$"{ID}_Mine_Left"];
+                    break;
+                case State.Mining_Down:
+                    Texture = textures[$"{ID}_Mine_Down"];
+                    break;
+                case State.Mining_Up:
+                    Texture = textures[$"{ID}_Mine_Up"];
+                    break;
+                case State.Idle:
+                    Texture = textures[$"{ID}_Front"];
+                    break;
+            }
         }
     }
 }
