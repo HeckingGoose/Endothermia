@@ -61,15 +61,15 @@ namespace ThreeThingGame
             // Create new players
             player1 = new Player(
                 0,
-                Vector2.Zero,
+                new Vector2(50, 180),
                 textures["Blue_Front"],
-                new Vector2(40, 80)
+                new Vector2(60, 120)
                 );
             player2 = new Player(
                 1,
-                Vector2.Zero,
+                new Vector2(120, 180),
                 textures["Red_Front"],
-                new Vector2(40, 80)
+                new Vector2(60, 120)
                 );
 
             // Create grounds
@@ -146,13 +146,16 @@ namespace ThreeThingGame
                     case Keys.D:
                         tempVelPlayer1.X = gameSpeed * MAX_SPEED;
                         break;
+                    case Keys.S:
+                        break;
                     case Keys.Left:
                         tempVelPlayer2.X = -(gameSpeed * MAX_SPEED);
                         break;
                     case Keys.Right:
                         tempVelPlayer2.X = gameSpeed * MAX_SPEED;
                         break;
-
+                    case Keys.Down:
+                        break;
                 }
             }
 
@@ -209,8 +212,10 @@ namespace ThreeThingGame
                     )
                 );
 
+            // Create array to contain both prior arrays
             GroundTile[] surfaceTiles = new GroundTile[mineTiles.Length + baseTiles.Length];
 
+            // Combine arrays
             Array.Copy(mineTiles, surfaceTiles, mineTiles.Length);
             Array.ConstrainedCopy(baseTiles, 0, surfaceTiles, mineTiles.Length, baseTiles.Length);
 
@@ -301,6 +306,10 @@ namespace ThreeThingGame
             Vector2 tempPosPlayer1 = player1.Position;
             Vector2 tempPosPlayer2 = player2.Position;
 
+            // Keep players within screen bounds
+            valid[0] = LimitToBound(player1, tempPosPlayer1, tempVelPlayer1);
+            valid[2] = LimitToBound(player2, tempPosPlayer2, tempVelPlayer2);
+
             // Apply changes to cached positions
             if (valid[0])
             {
@@ -345,7 +354,6 @@ namespace ThreeThingGame
 
             // Calculate new camera Y position
             cameraPosition.Y = -200 + (player1.Position.Y + player2.Position.Y) / 2;
-
         }
         public void RunGraphics(
             SpriteBatch spriteBatch,
@@ -457,6 +465,20 @@ namespace ThreeThingGame
                 0,
                 0
                 );
+        }
+        private static bool LimitToBound(Player player, Vector2 position, Vector2 velocity, uint leftBound = 0, uint rightBound = 960)
+        {
+            // Check if player is about to leave left boundary
+            if (position.X + velocity.X < leftBound)
+            {
+                return false;
+            }
+            else if (position.X + velocity.X > rightBound - player.Size.X)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }

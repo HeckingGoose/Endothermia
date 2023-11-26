@@ -14,6 +14,7 @@ namespace ThreeThingGame
         private uint _health;
         private uint _temperature;
         private byte _ID;
+        private float _heldCoal;
         private Vector2 _position;
         private Vector2 _velocity;
         private Vector2 _size;
@@ -25,6 +26,7 @@ namespace ThreeThingGame
             _health = 100;
             _temperature = 38;
             _ID = ID;
+            _heldCoal = 0;
             _position = Vector2.Zero;
             _velocity = Vector2.Zero;
             _size = Vector2.Zero;
@@ -41,6 +43,7 @@ namespace ThreeThingGame
             _health = 100;
             _temperature = 38;
             _ID = ID;
+            _heldCoal = 0;
             _position = position;
             _velocity = Vector2.Zero;
             _texture = texture;
@@ -81,6 +84,12 @@ namespace ThreeThingGame
         public byte ID
         {
             get { return _ID; }
+        }
+
+        public float HeldCoal
+        {
+            get { return _heldCoal; }
+            set { _heldCoal = value; }
         }
 
         public Vector2 Position
