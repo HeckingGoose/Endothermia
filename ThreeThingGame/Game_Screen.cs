@@ -183,9 +183,41 @@ namespace ThreeThingGame
                 {
                     case Keys.A:
                         tempVelPlayer1.X = -(gameSpeed * MAX_SPEED);
+
+                        if (!keyMap[Keys.A])
+                        {
+                            player1.HeldCoal = MineTile(
+                                player1,
+                                ground,
+                                new Vector2(
+                                    player1.Position.X,
+                                    player1.Position.Y + player1.Size.Y / 2
+                                    ),
+                                new Vector2(
+                                    player1.Size.X / 2,
+                                    player1.Size.Y / 2
+                                    )
+                                );
+                        }
                         break;
                     case Keys.D:
                         tempVelPlayer1.X = gameSpeed * MAX_SPEED;
+
+                        if (!keyMap[Keys.D])
+                        {
+                            player1.HeldCoal = MineTile(
+                                player1,
+                                ground,
+                                new Vector2(
+                                    player1.Position.X + player1.Size.X,
+                                    player1.Position.Y + player1.Size.Y / 2
+                                    ),
+                                new Vector2(
+                                    player1.Size.X / 2,
+                                    player1.Size.Y / 2
+                                    )
+                                );
+                        }
                         break;
                     case Keys.S:
                         // P1 dig down
@@ -209,14 +241,46 @@ namespace ThreeThingGame
                         break;
                     case Keys.Left:
                         tempVelPlayer2.X = -(gameSpeed * MAX_SPEED);
+
+                        if (!keyMap[Keys.Left])
+                        {
+                            player2.HeldCoal = MineTile(
+                                player2,
+                                ground,
+                                new Vector2(
+                                    player2.Position.X,
+                                    player2.Position.Y + player2.Size.Y / 2
+                                    ),
+                                new Vector2(
+                                    player2.Size.X / 2,
+                                    player2.Size.Y / 2
+                                    )
+                                );
+                        }
                         break;
                     case Keys.Right:
                         tempVelPlayer2.X = gameSpeed * MAX_SPEED;
+
+                        if (!keyMap[Keys.Right])
+                        {
+                            player2.HeldCoal = MineTile(
+                                player2,
+                                ground,
+                                new Vector2(
+                                    player2.Position.X + player2.Size.X,
+                                    player2.Position.Y + player2.Size.Y / 2
+                                    ),
+                                new Vector2(
+                                    player2.Size.X / 2,
+                                    player2.Size.Y / 2
+                                    )
+                                );
+                        }
                         break;
                     case Keys.Down:
                         // P2 dig down
 
-                        // If key nod held
+                        // If key not held
                         if (!keyMap[Keys.Down])
                         {
                             player2.HeldCoal = MineTile(
