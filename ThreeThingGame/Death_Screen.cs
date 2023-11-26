@@ -83,8 +83,8 @@ namespace ThreeThingGame
                 fonts["SWTxt_48"],
                 deathText,
                 new Vector2(
-                    480 - length.X / 2,
-                    200
+                    (480 - length.X / 2) * scale.X,
+                    200 * scale.Y
                 ),
                 Color.White,
                 0,
