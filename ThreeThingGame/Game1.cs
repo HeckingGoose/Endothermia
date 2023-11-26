@@ -117,6 +117,7 @@ namespace ThreeThingGame
             textures.Add("Bedrock", Content.Load<Texture2D>(@"Sprites\bedrock"));
             textures.Add("Empty", Content.Load<Texture2D>(@"Sprites\empty"));
             textures.Add("GameplayBase", Content.Load<Texture2D>(@"Sprites\gameplayBase"));
+            textures.Add("Snow_Overlay", Content.Load<Texture2D>(@"Sprites\snow_overlay"));
 
             // UI
             textures.Add("Blue_Icon", Content.Load<Texture2D>(@"Sprites\blue_icon"));
@@ -131,6 +132,16 @@ namespace ThreeThingGame
             soundEffects.Add("Pick_Hit_1", Content.Load<SoundEffect>(@"Audio\pick_hit_1"));
             soundEffects.Add("Pick_Hit_2", Content.Load<SoundEffect>(@"Audio\pick_hit_2"));
             soundEffects.Add("Pick_Hit_3", Content.Load<SoundEffect>(@"Audio\pick_hit_3"));
+
+            soundEffects.Add("Snow_Walk_0", Content.Load<SoundEffect>(@"Audio\snow_walk_0"));
+            soundEffects.Add("Snow_Walk_1", Content.Load<SoundEffect>(@"Audio\snow_walk_1"));
+            soundEffects.Add("Snow_Walk_2", Content.Load<SoundEffect>(@"Audio\snow_walk_2"));
+            soundEffects.Add("Snow_Walk_3", Content.Load<SoundEffect>(@"Audio\snow_walk_3"));
+            soundEffects.Add("Snow_Walk_4", Content.Load<SoundEffect>(@"Audio\snow_walk_4"));
+            soundEffects.Add("Snow_Walk_5", Content.Load<SoundEffect>(@"Audio\snow_walk_5"));
+            soundEffects.Add("Snow_Walk_6", Content.Load<SoundEffect>(@"Audio\snow_walk_6"));
+            soundEffects.Add("Snow_Walk_7", Content.Load<SoundEffect>(@"Audio\snow_walk_7"));
+            soundEffects.Add("Snow_Walk_8", Content.Load<SoundEffect>(@"Audio\snow_walk_8"));
 
             // Initialise menu screen
             menuScreen = new Menu_Screen(

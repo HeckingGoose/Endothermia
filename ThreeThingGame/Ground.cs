@@ -249,7 +249,8 @@ namespace ThreeThingGame
             uint groundWidth,
             uint groundDepth,
             Rectangle drawSpace,
-            Dictionary<string, Texture2D> textures
+            Dictionary<string, Texture2D> textures,
+            bool overlayEnabled = true
             )
         {
             // Calculate scale factors between screen space and ground space
@@ -323,6 +324,15 @@ namespace ThreeThingGame
                                         Color.White
                                         );
                                     break;
+                            }
+                            if (y == 0 && overlayEnabled) // Draw snow overlay
+                            {
+                                // Draw snow overlay
+                                spriteBatch.Draw(
+                                    textures["Snow_Overlay"],
+                                    destRect,
+                                    Color.White
+                                    );
                             }
                             break;
                     }

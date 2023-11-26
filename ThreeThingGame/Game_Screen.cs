@@ -40,6 +40,10 @@ namespace ThreeThingGame
         private float snowSpeed;
         private Random rng;
 
+        // Snow step timers
+        private double stepTimeLeft_1 = 0;
+        private double stepTimeLeft_2 = 0;
+
         // Players
         private Player player1;
         private Player player2;
@@ -172,13 +176,66 @@ namespace ThreeThingGame
             player2.Temperature -= FREEZE_RATE * gameSpeed;
 
             // Check if player is in correct area to warm up
-            if (player1.Position.X < 200 & player1.Temperature < TARGET_TEMP)
+            if (player1.Position.X < 200)
             {
-                player1.Temperature += 0.3f;
+                // Handle temperature
+                if (player1.Temperature < TARGET_TEMP)
+                {
+                    player1.Temperature += 0.3f;
+                }
+
             }
-            if (player2.Position.X < 200 & player2.Temperature < TARGET_TEMP)
+            if (player2.Position.X < 200)
             {
-                player2.Temperature += 0.3f;
+                // Handle temperature
+                if (player2.Temperature < TARGET_TEMP)
+                {
+                    player2.Temperature += 0.3f;
+                }
+            }
+
+            // If player is walking on the surface (uses hardcoded values, ew)
+            if (player1.Position.Y + player1.Size.Y < 310 && Math.Abs(player1.Velocity.Length()) > 0)
+            {
+                // Player 1 is probably walking on the surface
+
+                // Decrement timer
+                stepTimeLeft_1 -= deltaTime;
+
+                if (stepTimeLeft_1 <= 0)
+                {
+                    // If the sound effect has stopped playing, then play a new one
+
+                    // Generate random index
+                    int i = rng.Next(9);
+
+                    // Cache length of sound at index
+                    stepTimeLeft_1 = soundEffects[$"Snow_Walk_{i}"].Duration.TotalSeconds;
+
+                    // Play sound at index
+                    soundEffects[$"Snow_Walk_{i}"].Play();
+                }
+            }
+            if (player2.Position.Y + player2.Size.Y < 310 && Math.Abs(player2.Velocity.Length()) > 0)
+            {
+                // Player 2 is probably walking on the surface
+
+                // Decrement timer
+                stepTimeLeft_2 -= deltaTime;
+
+                if (stepTimeLeft_2 <= 0)
+                {
+                    // If the sound effect has stopped playing, then play a new one
+
+                    // Generate random index
+                    int i = rng.Next(9);
+
+                    // Cache length of sound at index
+                    stepTimeLeft_2 = soundEffects[$"Snow_Walk_{i}"].Duration.TotalSeconds;
+
+                    // Play sound at index
+                    soundEffects[$"Snow_Walk_{i}"].Play();
+                }
             }
 
             // Read keyboard input
@@ -553,6 +610,30 @@ namespace ThreeThingGame
             // Calculate float scale
             float minScale = Math.Min(scale.X, scale.Y);
 
+            // Draw player base
+            spriteBatch.Draw(
+                textures["GameplayBase"],
+                new Rectangle(
+                    0,
+                    (int)((100 - cameraPosition.Y) * scale.Y),
+                    (int)(200 * scale.X),
+                    (int)(200 * scale.Y)
+                    ),
+                Color.White
+                );
+
+            // Draw snow background (technically wrong draw order, but it's visually unnoticeable
+            spriteBatch.Draw(
+                textures["Snow"],
+                new Rectangle(
+                    (int)(snowPosition.X * scale.X),
+                    (int)(snowPosition.Y * scale.Y),
+                    (int)(textures["Snow"].Width * scale.X),
+                    (int)(textures["Snow"].Height * scale.Y)
+                    ),
+                Color.White
+                );
+
             // Draw empties
             Ground.DrawEmpties(
                 spriteBatch,
@@ -566,18 +647,6 @@ namespace ThreeThingGame
                     (int)(1000 * scale.Y)
                     ),
                 textures
-                );
-
-            // Draw player base
-            spriteBatch.Draw(
-                textures["GameplayBase"],
-                new Rectangle(
-                    0,
-                    (int)((100 - cameraPosition.Y) * scale.Y),
-                    (int)(200 * scale.X),
-                    (int)(200 * scale.Y)
-                    ),
-                Color.White
                 );
 
             // Draw players
@@ -599,18 +668,6 @@ namespace ThreeThingGame
                     (int)((player1.Position.Y - cameraPosition.Y) * scale.Y),
                     (int)(player1.Size.X * scale.X),
                     (int)(player1.Size.Y * scale.Y)
-                    ),
-                Color.White
-                );
-
-            // Draw snow background
-            spriteBatch.Draw(
-                textures["Snow"],
-                new Rectangle(
-                    (int)(snowPosition.X * scale.X),
-                    (int)(snowPosition.Y * scale.Y),
-                    (int)(textures["Snow"].Width * scale.X),
-                    (int)(textures["Snow"].Height * scale.Y)
                     ),
                 Color.White
                 );
@@ -642,7 +699,8 @@ namespace ThreeThingGame
                     (int)(960 * scale.X),
                     (int)(560 * scale.Y)
                     ),
-                textures
+                textures,
+                false
                 );
 
             // Draw game ground
