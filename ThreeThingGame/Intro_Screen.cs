@@ -89,7 +89,7 @@ namespace ThreeThingGame
             spriteBatch.DrawString(
                 fonts["SWTxt_36"],
                 "Good Morning,",
-                new Vector2(10, 10),
+                new Vector2(10 * scale.X, 10 * scale.Y),
                 Color.White,
                 0,
                 Vector2.Zero,
@@ -101,7 +101,7 @@ namespace ThreeThingGame
             spriteBatch.DrawString(
                 fonts["SWTxt_24"],
                 "Welcome to your new home for the next 30",
-                new Vector2(10, 10 + spacing_36),
+                new Vector2(10 * scale.X, (10 + spacing_36) * scale.Y),
                 Color.White,
                 0,
                 Vector2.Zero,
@@ -113,7 +113,7 @@ namespace ThreeThingGame
             spriteBatch.DrawString(
                 fonts["SWTxt_24"],
                 "days. During this time you will be",
-                new Vector2(10, 10 + spacing_36 + spacing_24),
+                new Vector2(10 * scale.X, (10 + spacing_36 + spacing_24) * scale.Y),
                 Color.White,
                 0,
                 Vector2.Zero,
@@ -124,7 +124,7 @@ namespace ThreeThingGame
             spriteBatch.DrawString(
                 fonts["SWTxt_24"],
                 "mining coal to heat your home.",
-                new Vector2(10, 10 + spacing_36 + spacing_24 * 2),
+                new Vector2(10 * scale.X, (10 + spacing_36 + spacing_24 * 2) * scale.Y),
                 Color.White,
                 0,
                 Vector2.Zero,
@@ -136,7 +136,7 @@ namespace ThreeThingGame
             spriteBatch.DrawString(
                 fonts["SWTxt_24"],
                 "We're also obligated to mention that you",
-                new Vector2(10, 10 + spacing_36 + spacing_24 * 4),
+                new Vector2(10 * scale.X, (10 + spacing_36 + spacing_24 * 4) * scale.Y),
                 Color.White,
                 0,
                 Vector2.Zero,
@@ -148,7 +148,7 @@ namespace ThreeThingGame
             spriteBatch.DrawString(
                 fonts["SWTxt_24"],
                 "have a quota from us to meet every day.",
-                new Vector2(10, 10 + spacing_36 + spacing_24 * 5),
+                new Vector2(10 * scale.X, (10 + spacing_36 + spacing_24 * 5) * scale.Y),
                 Color.White,
                 0,
                 Vector2.Zero,
@@ -160,7 +160,7 @@ namespace ThreeThingGame
             spriteBatch.DrawString(
                 fonts["SWTxt_36"],
                 "- Management",
-                new Vector2(30, 10 + spacing_36 + spacing_24 * 6 + 20),
+                new Vector2(scale.X * 30, (10 + spacing_36 + spacing_24 * 6 + 20) * scale.Y),
                 Color.White,
                 0,
                 Vector2.Zero,

@@ -96,7 +96,7 @@ namespace ThreeThingGame
             spriteBatch.DrawString(
                 fonts["SWTxt_36"],
                 $"End of day {day} stats:",
-                new Vector2(10, 10),
+                new Vector2(10 * scale.X, 10 * scale.Y),
                 Color.White,
                 0,
                 Vector2.Zero,
@@ -108,7 +108,7 @@ namespace ThreeThingGame
             spriteBatch.DrawString(
                 fonts["SWTxt_24"],
                 $"Coal Quota: -{coalQuota}",
-                new Vector2(10, 10 + spacing_36),
+                new Vector2(10 * scale.X, (10 + spacing_36) * scale.Y),
                 Color.Red,
                 0,
                 Vector2.Zero,
@@ -119,7 +119,7 @@ namespace ThreeThingGame
             spriteBatch.DrawString(
                 fonts["SWTxt_24"],
                 $"Heating Cost: -{heatingCost}",
-                new Vector2(10, 10 + spacing_36 + spacing_24),
+                new Vector2(scale.X * 10, (10 + spacing_36 + spacing_24) * scale.Y),
                 Color.Red,
                 0,
                 Vector2.Zero,
@@ -141,7 +141,7 @@ namespace ThreeThingGame
             spriteBatch.DrawString(
                 fonts["SWTxt_24"],
                 $"Total Coal: {totalCoal}",
-                new Vector2(10, 10 + spacing_36 + spacing_24 * 2),
+                new Vector2(10 * scale.X, (10 + spacing_36 + spacing_24 * 2) * scale.Y),
                 tem,
                 0,
                 Vector2.Zero,
