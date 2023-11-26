@@ -20,7 +20,7 @@ namespace ThreeThingGame
         private const float DECELERATION_RATE = 0.5f;
         private const float GRAVITY = 0.2f;
         private const uint TERMINAL_VELOCITY = 3;
-        private const float COAL_CAPACITY = 5;
+        private const uint COAL_CAPACITY = 5;
         private const float TARGET_TEMP = 38f;
         private const float FREEZE_RATE = 0.002f;
         private const float FATAL_TEMP = 33f;
@@ -74,14 +74,14 @@ namespace ThreeThingGame
 
             // Create new players
             player1 = new Player(
-                0,
+                "Blue",
                 COAL_CAPACITY,
                 new Vector2(50, 180),
                 textures["Blue_Front"],
                 new Vector2(60, 120)
                 );
             player2 = new Player(
-                1,
+                "Red",
                 COAL_CAPACITY,
                 new Vector2(120, 180),
                 textures["Red_Front"],
@@ -366,6 +366,32 @@ namespace ThreeThingGame
                                 new Vector2(
                                     player2.Size.X / 2,
                                     player2.Size.X / 2
+                                    ),
+                                ref rng
+                                );
+                        }
+                        break;
+                    case Keys.W:
+                        // P1 go up
+
+                        if (player1.Position.Y + player1.Size.Y > 300)
+                        {
+                            tempVelPlayer1.Y = -(gameSpeed * MAX_SPEED);
+                        }
+
+                        if (!keyMap[Keys.W])
+                        {
+                            player1.HeldCoal = MineTile(
+                                soundEffects,
+                                player1,
+                                ground,
+                                new Vector2(
+                                    player1.Position.X + player1.Size.X / 2,
+                                    player1.Position.Y
+                                    ),
+                                new Vector2(
+                                    player1.Size.X / 2,
+                                    player1.Size.X / 2
                                     ),
                                 ref rng
                                 );
@@ -824,19 +850,9 @@ namespace ThreeThingGame
             float minScale
             )
         {
-            string iconName = String.Empty;
-            switch (player.ID)
-            {
-                case 0: // Blue player
-                    iconName = "Blue_Icon";
-                    break;
-                case 1: // Red Player
-                    iconName = "Red_Icon";
-                    break;
-                default: // Default icon
-                    iconName = "Blue_Icon";
-                    break;
-            }
+   
+            string iconName = $"{player.ID}_Icon";
+
             spriteBatch.Draw(
                 textures[iconName],
                 baseRect,
@@ -858,7 +874,7 @@ namespace ThreeThingGame
                 );
             spriteBatch.DrawString(
                 fonts["SWTxt_12"],
-                $"Coal: {Math.Round(player.HeldCoal, 1)}/{player.CoalCapacity}",
+                $"Coal: {player.HeldCoal}/{player.CoalCapacity}",
                 new Vector2(
                     (baseRect.X + baseRect.Width) + 10 * scale.X,
                     (baseRect.Y) + 40 * scale.Y
@@ -885,9 +901,9 @@ namespace ThreeThingGame
                 0
                 );
         }
-        private static float MineTile(Dictionary<string, SoundEffect> soundEffects, Player player, Ground ground, Vector2 point, Vector2 range, ref Random rng)
+        private static uint MineTile(Dictionary<string, SoundEffect> soundEffects, Player player, Ground ground, Vector2 point, Vector2 range, ref Random rng)
         {
-            float heldCoal = player.HeldCoal;
+            uint heldCoal = player.HeldCoal;
 
             (int y, int x) tile = Ground.GetNearestTileToPoint(
                 point,
