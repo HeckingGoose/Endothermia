@@ -100,6 +100,9 @@ namespace ThreeThingGame
             textures.Add("Bedrock", Content.Load<Texture2D>(@"Sprites\bedrock"));
             textures.Add("Empty", Content.Load<Texture2D>(@"Sprites\empty"));
 
+            textures.Add("Blue_Front", Content.Load<Texture2D>(@"Sprites\blue_front"));
+            textures.Add("Red_Front", Content.Load<Texture2D>(@"Sprites\red_front"));
+
 
             // Initialise menu screen
             menuScreen = new Menu_Screen(
@@ -211,6 +214,7 @@ namespace ThreeThingGame
                         ref _spriteBatch,
                         DAYTIME_SECONDS,
                         fonts,
+                        textures,
                         19,
                         25,
                         0.05f,

@@ -300,11 +300,18 @@ namespace ThreeThingGame
         /// Given a ground, returns an array of all tiles with exposed edges.
         /// </summary>
         /// <param name="ground">The ground to search for exposed tiles on.</param>
+        /// <param name="drawSpace">The space that the ground is drawn in.</param>
         /// <returns>Returns an array of ground tiles.</returns>
-        public static GroundTile[] GetSurface(Ground ground)
+        public static GroundTile[] GetSurface(Ground ground, Rectangle drawSpace)
         {
             // Define list of ground tiles
             List<GroundTile> container = new List<GroundTile>();
+
+            // Calculate scale factor
+            Vector2 innerScale = new Vector2(
+                drawSpace.Width / ground.Width,
+                drawSpace.Height / ground.Depth
+                );
 
             // Loop through each block in ground
             for (int y = 0; y < ground.Depth; y++)
@@ -338,7 +345,15 @@ namespace ThreeThingGame
                     // If exposed
                     if (exposed)
                     {
-                        container.Add(ground.Tiles[y, x]);
+                        // Generate a rectangle based on where the tile should be on screen
+                        Rectangle destRect = new Rectangle(
+                            (int)(x * innerScale.X) + drawSpace.X,
+                            (int)(y * innerScale.Y) + drawSpace.Y,
+                            (int)innerScale.X,
+                            (int)innerScale.Y
+                            );
+
+                        container.Add(new GroundTile(destRect, ground.Tiles[y, x].Type));
                         atSurface = true;
                     }
 

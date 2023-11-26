@@ -16,6 +16,7 @@ namespace ThreeThingGame
         private byte _ID;
         private Vector2 _position;
         private Vector2 _velocity;
+        private Vector2 _size;
         private Texture2D _texture;
 
         // Constructors
@@ -26,15 +27,32 @@ namespace ThreeThingGame
             _ID = ID;
             _position = Vector2.Zero;
             _velocity = Vector2.Zero;
+            _size = Vector2.Zero;
             _texture = null;
         }
 
+        public Player(
+            byte ID,
+            Vector2 position,
+            Texture2D texture,
+            Vector2 size
+            )
+        {
+            _health = 100;
+            _temperature = 38;
+            _ID = ID;
+            _position = position;
+            _velocity = Vector2.Zero;
+            _texture = texture;
+            _size = size;
+        }
         public Player(
             uint health,
             uint temperature,
             byte ID,
             Vector2 position,
             Vector2 velocity,
+            Vector2 size,
             Texture2D texture
             )
         {
@@ -44,6 +62,7 @@ namespace ThreeThingGame
             _position = position;
             _velocity = velocity;
             _texture = texture;
+            _size = size;
         }
 
         // Methods
@@ -74,6 +93,12 @@ namespace ThreeThingGame
         {
             get { return _velocity; }
             set { _velocity = value; }
+        }
+
+        public Vector2 Size
+        {
+            get { return _size; }
+            set { _size = value; }
         }
 
         public Texture2D Texture

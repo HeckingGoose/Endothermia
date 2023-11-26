@@ -40,6 +40,7 @@ namespace ThreeThingGame
             ref SpriteBatch spriteBatch,
             int dayTime,
             Dictionary<string, SpriteFont> fonts,
+            Dictionary<string, Texture2D> textures,
             uint groundWidth,
             uint groundDepth,
             float coalDist,
@@ -55,10 +56,16 @@ namespace ThreeThingGame
 
             // Create new players
             player1 = new Player(
-                0
+                0,
+                Vector2.Zero,
+                textures["Blue_Front"],
+                new Vector2(80, 120)
                 );
             player2 = new Player(
-                1
+                1,
+                Vector2.Zero,
+                textures["Red_Front"],
+                new Vector2(80, 120)
                 );
 
             // Create grounds
@@ -150,9 +157,125 @@ namespace ThreeThingGame
             player1.Velocity = tempVelPlayer1;
             player2.Velocity = tempVelPlayer2;
 
-            // Apply player velocities
-            player1.Position += player1.Velocity;
-            player2.Position += player2.Velocity;
+            // Fetch surface tiles
+            GroundTile[] surfaceTiles = Ground.GetSurface(
+                ground,
+                new Rectangle(
+                    200,
+                    (int)(300 - cameraPosition.Y),
+                    760,
+                    1000
+                    )
+                );
+
+            // Track whether move is valid
+            bool[] valid = new bool[4]
+            {
+                true, // player1 X
+                true, // player1 Y
+                true, // player2 X
+                true, // player2 Y
+            };
+
+            // Loop through all surface tiles
+            foreach (GroundTile tile in surfaceTiles)
+            {
+                // PLAYER 1
+                // Check if x is valid
+                if (valid[0])
+                {
+                    Vector2 checkPos = player1.Position;
+                    checkPos.X += tempVelPlayer1.X;
+                    Rectangle checkRect = new Rectangle(
+                        (int)checkPos.X,
+                        (int)checkPos.Y,
+                        (int)player1.Size.X,
+                        (int)player1.Size.Y
+                        );
+                    if (checkRect.Intersects(tile.Rect))
+                    {
+                        valid[0] = false;
+                    }
+                }
+
+                // Check if y is valid
+                if (valid[1])
+                {
+                    Vector2 checkPos = player1.Position;
+                    checkPos.Y += tempVelPlayer1.Y;
+                    Rectangle checkRect = new Rectangle(
+                        (int)checkPos.X,
+                        (int)checkPos.Y,
+                        (int)player1.Size.X,
+                        (int)player1.Size.Y
+                        );
+                    if (checkRect.Intersects(tile.Rect))
+                    {
+                        valid[1] = false;
+                    }
+                }
+
+                // PLAYER 2
+                // Check if x is valid
+                if (valid[2])
+                {
+                    Vector2 checkPos = player2.Position;
+                    checkPos.X += tempVelPlayer2.X;
+                    Rectangle checkRect = new Rectangle(
+                        (int)checkPos.X,
+                        (int)checkPos.Y,
+                        (int)player2.Size.X,
+                        (int)player2.Size.Y
+                        );
+                    if (checkRect.Intersects(tile.Rect))
+                    {
+                        valid[2] = false;
+                    }
+                }
+
+                // Check if y is valid
+                if (valid[3])
+                {
+                    Vector2 checkPos = player2.Position;
+                    checkPos.Y += tempVelPlayer2.Y;
+                    Rectangle checkRect = new Rectangle(
+                        (int)checkPos.X,
+                        (int)checkPos.Y,
+                        (int)player2.Size.X,
+                        (int)player2.Size.Y
+                        );
+                    if (checkRect.Intersects(tile.Rect))
+                    {
+                        valid[3] = false;
+                    }
+                }
+            }
+
+            // Cache player positions
+            Vector2 tempPosPlayer1 = player1.Position;
+            Vector2 tempPosPlayer2 = player2.Position;
+
+            // Apply changes to cached positions
+            if (valid[0])
+            {
+                tempPosPlayer1.X += tempVelPlayer1.X;
+            }
+            if (valid[1])
+            {
+                tempPosPlayer1.Y += tempVelPlayer1.Y;
+            }
+            if (valid[2])
+            {
+                tempPosPlayer2.X += tempVelPlayer2.X;
+            }
+            if (valid[3])
+            {
+                tempPosPlayer2.Y += tempVelPlayer2.Y;
+            }
+
+            // Apply cached positions
+            player1.Position = tempPosPlayer1;
+            player2.Position = tempPosPlayer2;
 
             // Reset player velocities
             player1.Velocity = Vector2.Zero;
@@ -197,6 +320,28 @@ namespace ThreeThingGame
                     (int)(1000 * scale.Y)
                     ),
                 textures
+                );
+
+            // Draw test players
+            spriteBatch.Draw(
+                player1.Texture,
+                new Rectangle(
+                    (int)(player1.Position.X * scale.X),
+                    (int)((player1.Position.Y - cameraPosition.Y) * scale.Y),
+                    (int)(player1.Size.X * scale.X),
+                    (int)(player1.Size.Y * scale.Y)
+                    ),
+                Color.White
+                );
+            spriteBatch.Draw(
+                player2.Texture,
+                new Rectangle(
+                    (int)(player2.Position.X * scale.X),
+                    (int)((player2.Position.Y - cameraPosition.Y) * scale.Y),
+                    (int)(player2.Size.X * scale.X),
+                    (int)(player2.Size.Y * scale.Y)
+                    ),
+                Color.White
                 );
 
             // Draw timer
