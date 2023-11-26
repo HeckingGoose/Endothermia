@@ -1,17 +1,15 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Xna.Framework.Input;
-using static ThreeThingGame.Player;
-using System.Reflection;
 
 namespace ThreeThingGame
 {
-    internal class Intro_Screen
+    internal class DayEnd_Screen
     {
         // External Variables
         private GraphicsDeviceManager _graphics;
@@ -22,7 +20,7 @@ namespace ThreeThingGame
 
 
         // Constructor
-        public Intro_Screen(
+        public DayEnd_Screen(
             ref GraphicsDeviceManager graphics,
             ref SpriteBatch spriteBatch,
             Dictionary<string, SpriteFont> fonts,
@@ -33,7 +31,7 @@ namespace ThreeThingGame
             _spriteBatch = spriteBatch;
 
             Button continueButton = new Button(
-                "Play",
+                "Continue",
                 false,
                 Color.Black,
                 Color.White,
@@ -81,94 +79,6 @@ namespace ThreeThingGame
             Vector2 scale
             )
         {
-            float minScale = Math.Min(scale.X, scale.Y);
-            float spacing_36 = fonts["SWTxt_36"].MeasureString("A").Y + 2;
-            float spacing_24 = fonts["SWTxt_24"].MeasureString("A").Y + 2;
-
-            // Draw some text
-            spriteBatch.DrawString(
-                fonts["SWTxt_36"],
-                "Good Morning,",
-                new Vector2(10, 10),
-                Color.White,
-                0,
-                Vector2.Zero,
-                minScale,
-                0,
-                0
-                );
-
-            spriteBatch.DrawString(
-                fonts["SWTxt_24"],
-                "Welcome to your new home for the next 30",
-                new Vector2(10, 10 + spacing_36),
-                Color.White,
-                0,
-                Vector2.Zero,
-                minScale,
-                0,
-                0
-                );
-
-            spriteBatch.DrawString(
-                fonts["SWTxt_24"],
-                "days. During this time you will be",
-                new Vector2(10, 10 + spacing_36 + spacing_24),
-                Color.White,
-                0,
-                Vector2.Zero,
-                minScale,
-                0,
-                0
-                );
-            spriteBatch.DrawString(
-                fonts["SWTxt_24"],
-                "mining coal to heat your home.",
-                new Vector2(10, 10 + spacing_36 + spacing_24 * 2),
-                Color.White,
-                0,
-                Vector2.Zero,
-                minScale,
-                0,
-                0
-                );
-
-            spriteBatch.DrawString(
-                fonts["SWTxt_24"],
-                "We're also obligated to mention that you",
-                new Vector2(10, 10 + spacing_36 + spacing_24 * 4),
-                Color.White,
-                0,
-                Vector2.Zero,
-                minScale,
-                0,
-                0
-                );
-
-            spriteBatch.DrawString(
-                fonts["SWTxt_24"],
-                "have a quota from us to meet every day.",
-                new Vector2(10, 10 + spacing_36 + spacing_24 * 5),
-                Color.White,
-                0,
-                Vector2.Zero,
-                minScale,
-                0,
-                0
-                );
-
-            spriteBatch.DrawString(
-                fonts["SWTxt_36"],
-                "- Management",
-                new Vector2(30, 10 + spacing_36 + spacing_24 * 6 + 20),
-                Color.White,
-                0,
-                Vector2.Zero,
-                minScale,
-                0,
-                0
-                );
-
             // Draw buttons
             foreach (Button button in buttons)
             {

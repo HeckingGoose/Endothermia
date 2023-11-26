@@ -17,7 +17,7 @@ namespace ThreeThingGame
         private const int TARGET_FRAMERATE = 60;
         private const int TARGET_WIDTH = 960;
         private const int TARGET_HEIGHT = 540;
-        private const int DAYTIME_SECONDS = 240;
+        private const int DAYTIME_SECONDS = 120;
         // ENDCONST
 
         // VAR
@@ -39,6 +39,7 @@ namespace ThreeThingGame
         private Intro_Screen introScreen;
         private Game_Screen gameScreen;
         private Day_Screen dayScreen;
+        private DayEnd_Screen dayEndScreen;
 
         // Mouse held
         private bool[] mouseButtonsHeld;
@@ -48,6 +49,9 @@ namespace ThreeThingGame
 
         // Keymap
         private Dictionary<Keys, bool> keyMap;
+
+        // Persistent game variables
+        private uint totalCoal;
 
         // ENDVAR
 
@@ -67,7 +71,8 @@ namespace ThreeThingGame
             soundEffects = new Dictionary<string, SoundEffect>();
             keyMap = new Dictionary<Keys, bool>();
             mouseButtonsHeld = new bool[3];
-            day = 1;
+            day = 0;
+            totalCoal = 0;
 
             // Track utility keys
             keyMap.Add(Keys.F11, false);
@@ -79,6 +84,8 @@ namespace ThreeThingGame
             keyMap.Add(Keys.Left, false);
             keyMap.Add(Keys.Down, false);
             keyMap.Add(Keys.Right, false);
+            keyMap.Add(Keys.E, false);
+            keyMap.Add(Keys.RightControl, false);
 
             // Initialise window size
             _graphics.PreferredBackBufferWidth = TARGET_WIDTH;
@@ -125,8 +132,8 @@ namespace ThreeThingGame
 
             // Player sprites
             textures.Add("Blue_Front", Content.Load<Texture2D>(@"Sprites\blue_front"));
-            textures.Add("Blue_Mine_Right", Content.Load<Texture2D>(@"Sprites\red_mine_right"));
-            textures.Add("Blue_Mine_Left", Content.Load<Texture2D>(@"Sprites\red_mine_left"));
+            textures.Add("Blue_Mine_Right", Content.Load<Texture2D>(@"Sprites\blue_mine_right"));
+            textures.Add("Blue_Mine_Left", Content.Load<Texture2D>(@"Sprites\blue_mine_left"));
 
             textures.Add("Red_Front", Content.Load<Texture2D>(@"Sprites\red_front"));
             textures.Add("Red_Mine_Right", Content.Load<Texture2D>(@"Sprites\red_mine_right"));
@@ -135,9 +142,9 @@ namespace ThreeThingGame
             textures.Add("Red_Climb", Content.Load<Texture2D>(@"Sprites\red_front"));
             textures.Add("Red_Mine_Down", Content.Load<Texture2D>(@"Sprites\red_front"));
             textures.Add("Red_Mine_Up", Content.Load<Texture2D>(@"Sprites\red_front"));
-            textures.Add("Blue_Climb", Content.Load<Texture2D>(@"Sprites\red_front"));
-            textures.Add("Blue_Mine_Down", Content.Load<Texture2D>(@"Sprites\red_front"));
-            textures.Add("Blue_Mine_Up", Content.Load<Texture2D>(@"Sprites\red_front"));
+            textures.Add("Blue_Climb", Content.Load<Texture2D>(@"Sprites\blue_front"));
+            textures.Add("Blue_Mine_Down", Content.Load<Texture2D>(@"Sprites\blue_front"));
+            textures.Add("Blue_Mine_Up", Content.Load<Texture2D>(@"Sprites\blue_front"));
 
             // Sound effects
             soundEffects.Add("Pick_Hit_0", Content.Load<SoundEffect>(@"Audio\pick_hit_0"));
@@ -232,17 +239,24 @@ namespace ThreeThingGame
                 case State.GameState.Intro_Load:
                     introScreen = new Intro_Screen(
                         ref _graphics,
-                        ref _spriteBatch
+                        ref _spriteBatch,
+                        fonts,
+                        textures
                         );
                     state = State.GameState.Intro_Main;
                     break;
 
                 case State.GameState.Intro_Main:
                     introScreen.RunLogic(
+                        ref state,
+                        mouseButtonsHeld,
+                        mouseState,
+                        scale
                         );
                     break;
 
                 case State.GameState.Day_Load:
+                    day++;
                     dayScreen = new Day_Screen(
                         ref _graphics,
                         ref _spriteBatch,
@@ -281,6 +295,8 @@ namespace ThreeThingGame
                         ref state,
                         keyMap,
                         soundEffects,
+                        textures,
+                        ref totalCoal,
                         gameSpeed,
                         gameTime.ElapsedGameTime.TotalSeconds,
                         keyboardState.GetPressedKeys()
@@ -288,15 +304,22 @@ namespace ThreeThingGame
                     break;
 
                 case State.GameState.DayEnd_Load:
-                    // Temp stuff
+                    dayEndScreen = new DayEnd_Screen(
+                        ref _graphics,
+                        ref _spriteBatch,
+                        fonts,
+                        textures
+                        );
                     state = State.GameState.DayEnd_Main;
                     break;
 
                 case State.GameState.DayEnd_Main:
-                    // Do day end
-                    // (day would be incremented inside of day end)
-                    day++;
-                    state = State.GameState.Day_Load;
+                    introScreen.RunLogic(
+                        ref state,
+                        mouseButtonsHeld,
+                        mouseState,
+                        scale
+                        );
                     break;
 
             }
@@ -374,9 +397,11 @@ namespace ThreeThingGame
                     break;
 
                 case State.GameState.Intro_Main:
-                    GraphicsDevice.Clear(Color.CornflowerBlue);
+                    GraphicsDevice.Clear(new Color(40, 40, 40, 255));
                     introScreen.RunGraphics(
-                        _spriteBatch
+                        _spriteBatch,
+                        fonts,
+                        scale
                         );
                     break;
 
@@ -390,7 +415,12 @@ namespace ThreeThingGame
                         );
                     break;
                 case State.GameState.DayEnd_Main:
-                    GraphicsDevice.Clear(Color.CornflowerBlue);
+                    GraphicsDevice.Clear(new Color(40, 40, 40, 255));
+                    dayEndScreen.RunGraphics(
+                        _spriteBatch,
+                        fonts,
+                        scale
+                        );
                     break;
             }
 

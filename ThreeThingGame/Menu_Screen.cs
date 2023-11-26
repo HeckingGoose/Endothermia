@@ -56,8 +56,6 @@ namespace ThreeThingGame
             Vector2 scale
             )
         {
-
-            // Run logic here
             foreach(Button button in buttons)
             {
                 if (mouseState.Position.X >= (button.Rect.X) * scale.X
@@ -120,7 +118,7 @@ namespace ThreeThingGame
 
         private void NewGameStart(ref State.GameState state)
         {
-            state = State.GameState.Day_Load;//State.GameState.Intro_Load;
+            state = State.GameState.Intro_Load;//State.GameState.Intro_Load;
         }
     }
 }
