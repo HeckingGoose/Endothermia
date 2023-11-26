@@ -82,10 +82,10 @@ namespace ThreeThingGame
             spriteBatch.Draw(
                 textures["TitleTexture"],
                 new Rectangle(
-                    (int)(280 * scale.X),
-                    (int)(80 * scale.Y),
-                    (int)(400 * scale.X),
-                    (int)(300 * scale.Y)
+                    (int)(80 * scale.X),
+                    (int)(-70 * scale.Y),
+                    (int)(800 * scale.X),
+                    (int)(600 * scale.Y)
                     ),
                 Color.White
                 );

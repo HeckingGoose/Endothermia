@@ -119,7 +119,7 @@ namespace ThreeThingGame
 
             // Title screen
             textures.Add("ButtonTexture", Content.Load<Texture2D>(@"Sprites\ButtonTexture"));
-            textures.Add("TitleTexture", Content.Load<Texture2D>(@"Sprites\blackTitle"));
+            textures.Add("TitleTexture", Content.Load<Texture2D>(@"Sprites\title"));
 
             // Gameplay
             textures.Add("Snow", Content.Load<Texture2D>(@"Sprites\snow"));
@@ -145,11 +145,12 @@ namespace ThreeThingGame
             textures.Add("Red_Mine_Right", Content.Load<Texture2D>(@"Sprites\red_mine_right"));
             textures.Add("Red_Mine_Left", Content.Load<Texture2D>(@"Sprites\red_mine_left"));
 
-            textures.Add("Red_Climb", Content.Load<Texture2D>(@"Sprites\red_front"));
-            textures.Add("Red_Mine_Down", Content.Load<Texture2D>(@"Sprites\red_front"));
+            textures.Add("Red_Climb", Content.Load<Texture2D>(@"Sprites\red_climb"));
+            textures.Add("Red_Mine_Down", Content.Load<Texture2D>(@"Sprites\red_mine_down"));
             textures.Add("Red_Mine_Up", Content.Load<Texture2D>(@"Sprites\red_front"));
-            textures.Add("Blue_Climb", Content.Load<Texture2D>(@"Sprites\blue_front"));
-            textures.Add("Blue_Mine_Down", Content.Load<Texture2D>(@"Sprites\blue_front"));
+
+            textures.Add("Blue_Climb", Content.Load<Texture2D>(@"Sprites\blue_climb"));
+            textures.Add("Blue_Mine_Down", Content.Load<Texture2D>(@"Sprites\blue_mine_down"));
             textures.Add("Blue_Mine_Up", Content.Load<Texture2D>(@"Sprites\blue_front"));
 
             // Sound effects

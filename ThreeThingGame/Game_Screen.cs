@@ -293,7 +293,7 @@ namespace ThreeThingGame
                         if (player1.Position.Y + player1.Size.Y > 300)
                         {
                             tempVelPlayer1.Y = -(gameSpeed * MAX_SPEED);
-                            player2.SetPlayerState(
+                            player1.SetPlayerState(
                                 Player.State.Climbing,
                                 textures
                                 );
