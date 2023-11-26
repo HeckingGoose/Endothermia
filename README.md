@@ -1,2 +1,1 @@
-# ThreeThingGame
-ThreeThingGame :)
+# Endothermia
