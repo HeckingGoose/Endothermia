@@ -91,15 +91,20 @@ namespace ThreeThingGame
             fonts.Add("SWTxt_36", Content.Load<SpriteFont>(@"Fonts\SWTxt_36"));
             fonts.Add("SWTxt_48", Content.Load<SpriteFont>(@"Fonts\SWTxt_48"));
 
+            // Title screen
             textures.Add("ButtonTexture", Content.Load<Texture2D>(@"Sprites\ButtonTexture"));
             textures.Add("TitleTexture", Content.Load<Texture2D>(@"Sprites\blackTitle"));
+
+            // Gameplay
             textures.Add("Coal", Content.Load<Texture2D>(@"Sprites\coal"));
             textures.Add("Oil", Content.Load<Texture2D>(@"Sprites\oilFull"));
             textures.Add("Gas", Content.Load<Texture2D>(@"Sprites\gas"));
             textures.Add("Rock", Content.Load<Texture2D>(@"Sprites\rock"));
             textures.Add("Bedrock", Content.Load<Texture2D>(@"Sprites\bedrock"));
             textures.Add("Empty", Content.Load<Texture2D>(@"Sprites\empty"));
+            textures.Add("GameplayBase", Content.Load<Texture2D>(@"Sprites\gameplayBase"));
 
+            // Player sprites
             textures.Add("Blue_Front", Content.Load<Texture2D>(@"Sprites\blue_front"));
             textures.Add("Red_Front", Content.Load<Texture2D>(@"Sprites\red_front"));
 
@@ -230,8 +235,7 @@ namespace ThreeThingGame
                         ref state,
                         gameSpeed,
                         gameTime.ElapsedGameTime.TotalSeconds,
-                        keyboardState.GetPressedKeys(),
-                        scale
+                        keyboardState.GetPressedKeys()
                         );
                     break;
 

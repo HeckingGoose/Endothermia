@@ -341,9 +341,13 @@ namespace ThreeThingGame
                     {
                         exposed = true;
                     }
+                    else if (y == 0) // To include tiles at top of list with no tiles ever above
+                    {
+                        exposed = true;
+                    }
 
                     // If exposed
-                    if (exposed)
+                    if (exposed && ground.Tiles[y, x].Filled)
                     {
                         // Generate a rectangle based on where the tile should be on screen
                         Rectangle destRect = new Rectangle(

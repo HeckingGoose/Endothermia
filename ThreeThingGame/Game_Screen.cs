@@ -7,13 +7,17 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework.Input;
 using System.Diagnostics;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace ThreeThingGame
 {
     internal class Game_Screen
     {
         // Constants
-        private const float MOVESPEED = 1;
+        private const uint MAX_SPEED = 3;
+        private const float DECELERATION_RATE = 0.5f;
+        private const float GRAVITY = 0.2f;
+        private const uint TERMINAL_VELOCITY = 3;
 
         // External Variables
         private GraphicsDeviceManager _graphics;
@@ -59,13 +63,13 @@ namespace ThreeThingGame
                 0,
                 Vector2.Zero,
                 textures["Blue_Front"],
-                new Vector2(80, 120)
+                new Vector2(40, 80)
                 );
             player2 = new Player(
                 1,
                 Vector2.Zero,
                 textures["Red_Front"],
-                new Vector2(80, 120)
+                new Vector2(40, 80)
                 );
 
             // Create grounds
@@ -115,13 +119,12 @@ namespace ThreeThingGame
             ref State.GameState state,
             float gameSpeed,
             double deltaTime,
-            Keys[] KeysPressed,
-            Vector2 scale
+            Keys[] KeysPressed
             )
         {
             // Handle game timer
             timeLeft -= deltaTime;
-            
+
             if (timeLeft < 0)
             {
                 // Day has ended
@@ -138,35 +141,78 @@ namespace ThreeThingGame
                 switch (key)
                 {
                     case Keys.A:
-                        tempVelPlayer1.X = -(gameSpeed * MOVESPEED);
+                        tempVelPlayer1.X = -(gameSpeed * MAX_SPEED);
                         break;
                     case Keys.D:
-                        tempVelPlayer1.X = gameSpeed * MOVESPEED;
+                        tempVelPlayer1.X = gameSpeed * MAX_SPEED;
                         break;
                     case Keys.Left:
-                        tempVelPlayer2.X = -(gameSpeed * MOVESPEED);
+                        tempVelPlayer2.X = -(gameSpeed * MAX_SPEED);
                         break;
                     case Keys.Right:
-                        tempVelPlayer2.X = gameSpeed * MOVESPEED;
+                        tempVelPlayer2.X = gameSpeed * MAX_SPEED;
                         break;
 
                 }
             }
 
-            // Set player velocities
-            player1.Velocity = tempVelPlayer1;
-            player2.Velocity = tempVelPlayer2;
+            // Apply deceleration
+            if (Math.Abs(tempVelPlayer1.X) > gameSpeed * DECELERATION_RATE)
+            {
+                tempVelPlayer1.X -= gameSpeed * DECELERATION_RATE * Math.Sign(tempVelPlayer1.X);
+            }
+            else if (tempVelPlayer1.X != 0)
+            {
+                tempVelPlayer1.X = 0;
+            }
+            if (Math.Abs(tempVelPlayer2.X) > gameSpeed * DECELERATION_RATE)
+            {
+                tempVelPlayer2.X -= gameSpeed * DECELERATION_RATE * Math.Sign(tempVelPlayer2.X);
+            }
+            else if (tempVelPlayer2.X != 0)
+            {
+                tempVelPlayer2.X = 0;
+            }
+
+            // Apply gravity
+            tempVelPlayer1.Y += GRAVITY * gameSpeed;
+            tempVelPlayer2.Y += GRAVITY * gameSpeed;
+
+            // Cap by terminal velocity
+            if (tempVelPlayer1.X > TERMINAL_VELOCITY)
+            {
+                tempVelPlayer1.X += TERMINAL_VELOCITY;
+            }
+            if (tempVelPlayer2.X > TERMINAL_VELOCITY)
+            {
+                tempVelPlayer2.X = TERMINAL_VELOCITY;
+            }
 
             // Fetch surface tiles
-            GroundTile[] surfaceTiles = Ground.GetSurface(
+            GroundTile[] mineTiles = Ground.GetSurface(
                 ground,
                 new Rectangle(
                     200,
-                    (int)(300 - cameraPosition.Y),
+                    300,
                     760,
                     1000
                     )
                 );
+
+            GroundTile[] baseTiles = Ground.GetSurface(
+                ground,
+                new Rectangle(
+                    0,
+                    300,
+                    200,
+                    1000
+                    )
+                );
+
+            GroundTile[] surfaceTiles = new GroundTile[mineTiles.Length + baseTiles.Length];
+
+            Array.Copy(mineTiles, surfaceTiles, mineTiles.Length);
+            Array.ConstrainedCopy(baseTiles, 0, surfaceTiles, mineTiles.Length, baseTiles.Length);
 
             // Track whether move is valid
             bool[] valid = new bool[4]
@@ -260,29 +306,45 @@ namespace ThreeThingGame
             {
                 tempPosPlayer1.X += tempVelPlayer1.X;
             }
+            else
+            {
+                tempVelPlayer1.X = 0;
+            }
             if (valid[1])
             {
                 tempPosPlayer1.Y += tempVelPlayer1.Y;
+            }
+            else
+            {
+                tempVelPlayer1.Y = 0;
             }
             if (valid[2])
             {
                 tempPosPlayer2.X += tempVelPlayer2.X;
             }
+            else
+            {
+                tempVelPlayer2.X = 0;
+            }
             if (valid[3])
             {
                 tempPosPlayer2.Y += tempVelPlayer2.Y;
             }
+            else
+            {
+                tempVelPlayer2.Y = 0;
+            }
+
+            // Set player velocities
+            player1.Velocity = tempVelPlayer1;
+            player2.Velocity = tempVelPlayer2;
 
             // Apply cached positions
             player1.Position = tempPosPlayer1;
             player2.Position = tempPosPlayer2;
 
-            // Reset player velocities
-            player1.Velocity = Vector2.Zero;
-            player2.Velocity = Vector2.Zero;
-
             // Calculate new camera Y position
-            cameraPosition.Y = (player1.Position.Y + player2.Position.Y) / 2;
+            cameraPosition.Y = -200 + (player1.Position.Y + player2.Position.Y) / 2;
 
         }
         public void RunGraphics(
@@ -292,6 +354,18 @@ namespace ThreeThingGame
             Dictionary<string, SpriteFont> fonts
             )
         {
+            // Draw player base
+            spriteBatch.Draw(
+                textures["GameplayBase"],
+                new Rectangle(
+                    0,
+                    (int)((100 - cameraPosition.Y) * scale.Y),
+                    (int)(200 * scale.X),
+                    (int)(200 * scale.Y)
+                    ),
+                Color.White
+                );
+
             // Draw unplayable ground
             Ground.DrawGround(
                 spriteBatch,
