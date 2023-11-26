@@ -96,6 +96,7 @@ namespace ThreeThingGame
             textures.Add("TitleTexture", Content.Load<Texture2D>(@"Sprites\blackTitle"));
 
             // Gameplay
+            textures.Add("Snow", Content.Load<Texture2D>(@"Sprites\snow"));
             textures.Add("Coal", Content.Load<Texture2D>(@"Sprites\coal"));
             textures.Add("Oil", Content.Load<Texture2D>(@"Sprites\oilFull"));
             textures.Add("Gas", Content.Load<Texture2D>(@"Sprites\gas"));
@@ -103,6 +104,10 @@ namespace ThreeThingGame
             textures.Add("Bedrock", Content.Load<Texture2D>(@"Sprites\bedrock"));
             textures.Add("Empty", Content.Load<Texture2D>(@"Sprites\empty"));
             textures.Add("GameplayBase", Content.Load<Texture2D>(@"Sprites\gameplayBase"));
+
+            // UI
+            textures.Add("Blue_Icon", Content.Load<Texture2D>(@"Sprites\blue_icon"));
+            textures.Add("Red_Icon", Content.Load<Texture2D>(@"Sprites\red_icon"));
 
             // Player sprites
             textures.Add("Blue_Front", Content.Load<Texture2D>(@"Sprites\blue_front"));

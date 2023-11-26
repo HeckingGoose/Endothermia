@@ -18,6 +18,7 @@ namespace ThreeThingGame
         private const float DECELERATION_RATE = 0.5f;
         private const float GRAVITY = 0.2f;
         private const uint TERMINAL_VELOCITY = 3;
+        private const float COAL_CAPACITY = 5;
 
         // External Variables
         private GraphicsDeviceManager _graphics;
@@ -29,6 +30,8 @@ namespace ThreeThingGame
         private Ground ground;
         private Ground unplayableGround;
         private Vector2 cameraPosition;
+        private Vector2 snowPosition;
+        private float snowSpeed;
 
         // Players
         private Player player1;
@@ -61,12 +64,14 @@ namespace ThreeThingGame
             // Create new players
             player1 = new Player(
                 0,
+                COAL_CAPACITY,
                 new Vector2(50, 180),
                 textures["Blue_Front"],
                 new Vector2(60, 120)
                 );
             player2 = new Player(
                 1,
+                COAL_CAPACITY,
                 new Vector2(120, 180),
                 textures["Red_Front"],
                 new Vector2(60, 120)
@@ -102,8 +107,10 @@ namespace ThreeThingGame
                 groundDepth
                 );
 
-            // Initialise camera position
+            // Initialise values
             cameraPosition = Vector2.Zero;
+            snowPosition = new Vector2(-960, -540);
+            snowSpeed = 1f;
 
             // Create timeLeft phrase
             timeLeftPhrase = "Until Nightfall:";
@@ -147,6 +154,7 @@ namespace ThreeThingGame
                         tempVelPlayer1.X = gameSpeed * MAX_SPEED;
                         break;
                     case Keys.S:
+                        // P1 dig down
                         break;
                     case Keys.Left:
                         tempVelPlayer2.X = -(gameSpeed * MAX_SPEED);
@@ -155,6 +163,7 @@ namespace ThreeThingGame
                         tempVelPlayer2.X = gameSpeed * MAX_SPEED;
                         break;
                     case Keys.Down:
+                        // P2 dig down
                         break;
                 }
             }
@@ -354,6 +363,19 @@ namespace ThreeThingGame
 
             // Calculate new camera Y position
             cameraPosition.Y = -200 + (player1.Position.Y + player2.Position.Y) / 2;
+
+            // Calculate new snow position
+            snowPosition.X += gameSpeed * snowSpeed;
+            snowPosition.Y += gameSpeed * snowSpeed;
+
+            if (snowPosition.X >= 0)
+            {
+                snowPosition.X = -960;
+            }
+            if (snowPosition.Y >= 0)
+            {
+                snowPosition.Y = -540;
+            }
         }
         public void RunGraphics(
             SpriteBatch spriteBatch,
@@ -362,6 +384,9 @@ namespace ThreeThingGame
             Dictionary<string, SpriteFont> fonts
             )
         {
+            // Calculate float scale
+            float minScale = Math.Min(scale.X, scale.Y);
+
             // Draw player base
             spriteBatch.Draw(
                 textures["GameplayBase"],
@@ -370,6 +395,41 @@ namespace ThreeThingGame
                     (int)((100 - cameraPosition.Y) * scale.Y),
                     (int)(200 * scale.X),
                     (int)(200 * scale.Y)
+                    ),
+                Color.White
+                );
+
+            // Draw players
+            spriteBatch.Draw(
+                player2.Texture,
+                new Rectangle(
+                    (int)(player2.Position.X * scale.X),
+                    (int)((player2.Position.Y - cameraPosition.Y) * scale.Y),
+                    (int)(player2.Size.X * scale.X),
+                    (int)(player2.Size.Y * scale.Y)
+                    ),
+                Color.White
+                );
+
+            spriteBatch.Draw(
+                player1.Texture,
+                new Rectangle(
+                    (int)(player1.Position.X * scale.X),
+                    (int)((player1.Position.Y - cameraPosition.Y) * scale.Y),
+                    (int)(player1.Size.X * scale.X),
+                    (int)(player1.Size.Y * scale.Y)
+                    ),
+                Color.White
+                );
+
+            // Draw snow background
+            spriteBatch.Draw(
+                textures["Snow"],
+                new Rectangle(
+                    (int)(snowPosition.X * scale.X),
+                    (int)(snowPosition.Y * scale.Y),
+                    (int)(textures["Snow"].Width * scale.X),
+                    (int)(textures["Snow"].Height * scale.Y)
                     ),
                 Color.White
                 );
@@ -404,26 +464,40 @@ namespace ThreeThingGame
                 textures
                 );
 
-            // Draw test players
-            spriteBatch.Draw(
-                player1.Texture,
-                new Rectangle(
-                    (int)(player1.Position.X * scale.X),
-                    (int)((player1.Position.Y - cameraPosition.Y) * scale.Y),
-                    (int)(player1.Size.X * scale.X),
-                    (int)(player1.Size.Y * scale.Y)
-                    ),
-                Color.White
+            // UI
+            // Player Info
+            // Player 1
+            Rectangle p1Base = new Rectangle(
+                (int)(20 * scale.X),
+                (int)(20 * scale.Y),
+                (int)(100 * scale.X),
+                (int)(100 * scale.Y)
                 );
-            spriteBatch.Draw(
-                player2.Texture,
-                new Rectangle(
-                    (int)(player2.Position.X * scale.X),
-                    (int)((player2.Position.Y - cameraPosition.Y) * scale.Y),
-                    (int)(player2.Size.X * scale.X),
-                    (int)(player2.Size.Y * scale.Y)
-                    ),
-                Color.White
+            DrawPlayerUI(
+                ref spriteBatch,
+                textures,
+                fonts,
+                player1,
+                p1Base,
+                scale,
+                minScale
+                );
+
+            // Player 2
+            Rectangle p2Base = new Rectangle(
+                (int)(340 * scale.X),
+                (int)(20 * scale.Y),
+                (int)(100 * scale.X),
+                (int)(100 * scale.Y)
+                );
+            DrawPlayerUI(
+                ref spriteBatch,
+                textures,
+                fonts,
+                player2,
+                p2Base,
+                scale,
+                minScale
                 );
 
             // Draw timer
@@ -434,7 +508,7 @@ namespace ThreeThingGame
                 Color.White,
                 0,
                 Vector2.Zero,
-                Math.Min(scale.X, scale.Y),
+                minScale,
                 0,
                 0
                 );
@@ -461,12 +535,18 @@ namespace ThreeThingGame
                 Color.White,
                 0,
                 Vector2.Zero,
-                Math.Min(scale.X, scale.Y),
+                minScale,
                 0,
                 0
                 );
         }
-        private static bool LimitToBound(Player player, Vector2 position, Vector2 velocity, uint leftBound = 0, uint rightBound = 960)
+        private static bool LimitToBound(
+            Player player,
+            Vector2 position,
+            Vector2 velocity,
+            uint leftBound = 0,
+            uint rightBound = 960
+            )
         {
             // Check if player is about to leave left boundary
             if (position.X + velocity.X < leftBound)
@@ -479,6 +559,77 @@ namespace ThreeThingGame
             }
 
             return true;
+        }
+        private static void DrawPlayerUI(
+            ref SpriteBatch spriteBatch,
+            Dictionary<string, Texture2D> textures,
+            Dictionary<string, SpriteFont> fonts,
+            Player player,
+            Rectangle baseRect,
+            Vector2 scale,
+            float minScale
+            )
+        {
+            string iconName = String.Empty;
+            switch (player.ID)
+            {
+                case 0: // Blue player
+                    iconName = "Blue_Icon";
+                    break;
+                case 1: // Red Player
+                    iconName = "Red_Icon";
+                    break;
+                default: // Default icon
+                    iconName = "Blue_Icon";
+                    break;
+            }
+            spriteBatch.Draw(
+                textures[iconName],
+                baseRect,
+                Color.White
+                );
+            spriteBatch.DrawString(
+                fonts["SWTxt_12"],
+                $"Health: {player.Health}",
+                new Vector2(
+                    (baseRect.X + baseRect.Width) + 10 * scale.X,
+                    (baseRect.Y) + 10 * scale.Y
+                    ),
+                Color.White,
+                0,
+                Vector2.Zero,
+                minScale,
+                0,
+                0
+                );
+            spriteBatch.DrawString(
+                fonts["SWTxt_12"],
+                $"Coal: {Math.Round(player.HeldCoal, 1)}/{player.CoalCapacity}",
+                new Vector2(
+                    (baseRect.X + baseRect.Width) + 10 * scale.X,
+                    (baseRect.Y) + 40 * scale.Y
+                    ),
+                Color.White,
+                0,
+                Vector2.Zero,
+                minScale,
+                0,
+                0
+                );
+            spriteBatch.DrawString(
+                fonts["SWTxt_12"],
+                $"Temperature: {player.Temperature}C",
+                new Vector2(
+                    (baseRect.X + baseRect.Width) + 10 * scale.X,
+                    (baseRect.Y) + 70 * scale.Y
+                    ),
+                Color.White,
+                0,
+                Vector2.Zero,
+                minScale,
+                0,
+                0
+                );
         }
     }
 }

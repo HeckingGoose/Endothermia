@@ -373,5 +373,44 @@ namespace ThreeThingGame
             // Return array of surface tiles
             return container.ToArray();
         }
+        public static (int y, int x) GetNearestTileToPoint(Vector2 point, Ground ground, Rectangle drawSpace, Vector2 range)
+        {
+            // Define nearest
+            (int y, int x) nearest = (-1, -1);
+            Vector2 nearestDist = new Vector2(int.MaxValue, int.MaxValue);
+
+            // Calculate scale factor
+            Vector2 innerScale = new Vector2(
+                drawSpace.Width / ground.Width,
+                drawSpace.Height / ground.Depth
+                );
+
+            // Loop through each block in ground
+            for (int y = 0; y < ground.Depth; y++)
+            {
+                for (int x = 0; x < ground.Width; x++)
+                {
+                    // Calculate tile position
+                    (int x, int y) tilePos = ((int)(x * innerScale.X) + drawSpace.X, (int)(y * innerScale.Y) + drawSpace.Y);
+
+                    // Check range
+                    Vector2 dist = new Vector2(
+                        (int)Math.Abs(Math.Abs(tilePos.x) - Math.Abs(point.X)),
+                        (int)Math.Abs(Math.Abs(tilePos.y) - Math.Abs(point.Y))
+                        );
+
+                    if (dist.X <= range.X && dist.Y <= range.Y)
+                    {
+                        // If tile is in range
+                        if (dist.Length() < nearestDist.Length())
+                        {
+                            nearest = (y, x);
+                            nearestDist = dist;
+                        }
+                    }
+                }
+            }
+            return nearest;
+        }
     }
 }
