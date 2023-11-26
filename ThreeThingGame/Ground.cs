@@ -191,6 +191,49 @@ namespace ThreeThingGame
             // Return result
             return output;
         }
+        public static void DrawEmpties(
+            SpriteBatch spriteBatch,
+            GroundTile[,] ground,
+            uint groundWidth,
+            uint groundDepth,
+            Rectangle drawSpace,
+            Dictionary<string, Texture2D> textures
+            )
+        {
+            // Calculate scale factors between screen space and ground space
+            Vector2 innerScale = new Vector2(
+                drawSpace.Width / groundWidth,
+                drawSpace.Height / groundDepth
+                );
+
+            // Draw tiles
+            for (int y = 0; y < groundDepth; y++)
+            {
+                for (int x = 0; x < groundWidth; x++)
+                {
+                    // Generate a rectangle to draw to
+                    Rectangle destRect = new Rectangle(
+                        (int)(x * innerScale.X) + drawSpace.X,
+                        (int)(y * innerScale.Y) + drawSpace.Y,
+                        (int)innerScale.X,
+                        (int)innerScale.Y
+                        );
+
+                    // Pick what needs to be drawn
+                    switch (ground[y, x].Filled)
+                    {
+                        case false:
+                            // Draw empty texture
+                            spriteBatch.Draw(
+                                textures["Empty"],
+                                destRect,
+                                Color.White
+                                );
+                            break;
+                    }
+                }
+            }
+        }
         /// <summary>
         /// Draws the ground given a set of parameters.
         /// </summary>
@@ -208,7 +251,7 @@ namespace ThreeThingGame
             Rectangle drawSpace,
             Dictionary<string, Texture2D> textures
             )
-        {// DONT FORGET TO APPLY DRAWSPACE XY OFFSETS
+        {
             // Calculate scale factors between screen space and ground space
             Vector2 innerScale = new Vector2(
                 drawSpace.Width / groundWidth,
@@ -282,16 +325,6 @@ namespace ThreeThingGame
                                     break;
                             }
                             break;
-
-                        // If the tile is not filled
-                        case false:
-                            // Draw background texture
-                            spriteBatch.Draw(
-                                textures["Empty"], // Missing texture!!!!
-                                destRect,
-                                Color.White
-                                );
-                            break;
                     }
                 }
             }
@@ -342,6 +375,14 @@ namespace ThreeThingGame
                         exposed = true;
                     }
                     else if (y == 0) // To include tiles at top of list with no tiles ever above
+                    {
+                        exposed = true;
+                    }
+                    else if (x == 0)
+                    {
+                        exposed = true;
+                    }
+                    else if (x == ground.Width - 1)
                     {
                         exposed = true;
                     }
@@ -399,13 +440,16 @@ namespace ThreeThingGame
                         (int)Math.Abs(Math.Abs(tilePos.y) - Math.Abs(point.Y))
                         );
 
-                    if (dist.X <= range.X && dist.Y <= range.Y)
+                    if (ground.Tiles[y, x].Filled)
                     {
-                        // If tile is in range
-                        if (dist.Length() < nearestDist.Length())
+                        if (dist.X <= range.X && dist.Y <= range.Y)
                         {
-                            nearest = (y, x);
-                            nearestDist = dist;
+                            // If tile is in range
+                            if (dist.Length() < nearestDist.Length())
+                            {
+                                nearest = (y, x);
+                                nearestDist = dist;
+                            }
                         }
                     }
                 }

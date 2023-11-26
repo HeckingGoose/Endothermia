@@ -29,6 +29,7 @@ namespace ThreeThingGame
         private double timeLeft;
         private Ground ground;
         private Ground unplayableGround;
+        private Ground lowestGround;
         private Vector2 cameraPosition;
         private Vector2 snowPosition;
         private float snowSpeed;
@@ -93,6 +94,21 @@ namespace ThreeThingGame
                 25
                 );
 
+            lowestGround = new Ground(
+                Ground.GenerateGround(
+                    24,
+                    14,
+                    0f,
+                    0f,
+                    0f,
+                    1f,
+                    0f,
+                    true
+                    ),
+                24,
+                14
+                );
+
             ground = new Ground(
                 Ground.GenerateGround(
                     groundWidth,
@@ -124,6 +140,7 @@ namespace ThreeThingGame
         // Methods
         public void RunLogic(
             ref State.GameState state,
+            Dictionary<Keys, bool> keyMap,
             float gameSpeed,
             double deltaTime,
             Keys[] KeysPressed
@@ -155,6 +172,33 @@ namespace ThreeThingGame
                         break;
                     case Keys.S:
                         // P1 dig down
+
+                        // If key not held
+                        if (!keyMap[Keys.S])
+                        {
+                            (int y, int x) tile = Ground.GetNearestTileToPoint(
+                                new Vector2(
+                                    player1.Position.X + player1.Size.X / 2,
+                                    player1.Position.Y + player1.Size.Y
+                                    ),
+                                ground,
+                                new Rectangle(
+                                    200,
+                                    300,
+                                    760,
+                                    1000
+                                    ),
+                                new Vector2(
+                                    player1.Size.X,
+                                    player1.Size.X / 2
+                                    )
+                                );
+
+                            if (tile.y >= 0 && tile.x >= 0)
+                            {
+                                ground.Tiles[tile.y, tile.x].Filled = false;
+                            }
+                        }
                         break;
                     case Keys.Left:
                         tempVelPlayer2.X = -(gameSpeed * MAX_SPEED);
@@ -211,8 +255,18 @@ namespace ThreeThingGame
                     )
                 );
 
-            GroundTile[] baseTiles = Ground.GetSurface(
+            GroundTile[] lowTiles = Ground.GetSurface(
                 ground,
+                new Rectangle(
+                    0,
+                    1300,
+                    960,
+                    560
+                    )
+                );
+
+            GroundTile[] baseTiles = Ground.GetSurface(
+                unplayableGround,
                 new Rectangle(
                     0,
                     300,
@@ -221,12 +275,13 @@ namespace ThreeThingGame
                     )
                 );
 
-            // Create array to contain both prior arrays
-            GroundTile[] surfaceTiles = new GroundTile[mineTiles.Length + baseTiles.Length];
+            // Create array to contain all prior arrays
+            GroundTile[] surfaceTiles = new GroundTile[mineTiles.Length + baseTiles.Length + lowTiles.Length];
 
             // Combine arrays
             Array.Copy(mineTiles, surfaceTiles, mineTiles.Length);
             Array.ConstrainedCopy(baseTiles, 0, surfaceTiles, mineTiles.Length, baseTiles.Length);
+            Array.ConstrainedCopy(lowTiles, 0, surfaceTiles, mineTiles.Length + baseTiles.Length, lowTiles.Length);
 
             // Track whether move is valid
             bool[] valid = new bool[4]
@@ -316,8 +371,14 @@ namespace ThreeThingGame
             Vector2 tempPosPlayer2 = player2.Position;
 
             // Keep players within screen bounds
-            valid[0] = LimitToBound(player1, tempPosPlayer1, tempVelPlayer1);
-            valid[2] = LimitToBound(player2, tempPosPlayer2, tempVelPlayer2);
+            if (valid[0])
+            {
+                valid[0] = LimitToBound(player1, tempPosPlayer1, tempVelPlayer1);
+            }
+            if (valid[2])
+            {
+                valid[2] = LimitToBound(player2, tempPosPlayer2, tempVelPlayer2);
+            }
 
             // Apply changes to cached positions
             if (valid[0])
@@ -387,6 +448,21 @@ namespace ThreeThingGame
             // Calculate float scale
             float minScale = Math.Min(scale.X, scale.Y);
 
+            // Draw empties
+            Ground.DrawEmpties(
+                spriteBatch,
+                ground.Tiles,
+                ground.Width,
+                ground.Depth,
+                new Rectangle(
+                    (int)(200 * scale.X),
+                    (int)((300 - cameraPosition.Y) * scale.Y),
+                    (int)(760 * scale.X),
+                    (int)(1000 * scale.Y)
+                    ),
+                textures
+                );
+
             // Draw player base
             spriteBatch.Draw(
                 textures["GameplayBase"],
@@ -445,6 +521,21 @@ namespace ThreeThingGame
                     (int)((300 - cameraPosition.Y) * scale.Y),
                     (int)(200 * scale.X),
                     (int)(1000 * scale.Y)
+                    ),
+                textures
+                );
+
+            // Draw lowest ground
+            Ground.DrawGround(
+                spriteBatch,
+                lowestGround.Tiles,
+                lowestGround.Width,
+                lowestGround.Depth,
+                new Rectangle(
+                    (int)(0 * scale.X),
+                    (int)((1300 - cameraPosition.Y) * scale.Y),
+                    (int)(960 * scale.X),
+                    (int)(560 * scale.Y)
                     ),
                 textures
                 );

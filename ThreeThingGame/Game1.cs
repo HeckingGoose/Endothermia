@@ -66,6 +66,14 @@ namespace ThreeThingGame
 
             // Track utility keys
             keyMap.Add(Keys.F11, false);
+            keyMap.Add(Keys.W, false);
+            keyMap.Add(Keys.A, false);
+            keyMap.Add(Keys.S, false);
+            keyMap.Add(Keys.D, false);
+            keyMap.Add(Keys.Up, false);
+            keyMap.Add(Keys.Left, false);
+            keyMap.Add(Keys.Down, false);
+            keyMap.Add(Keys.Right, false);
 
             // Initialise window size
             _graphics.PreferredBackBufferWidth = TARGET_WIDTH;
@@ -238,6 +246,7 @@ namespace ThreeThingGame
                 case State.GameState.Game_Main:
                     gameScreen.RunLogic(
                         ref state,
+                        keyMap,
                         gameSpeed,
                         gameTime.ElapsedGameTime.TotalSeconds,
                         keyboardState.GetPressedKeys()
@@ -251,6 +260,21 @@ namespace ThreeThingGame
                     // Increase day
                     break;
 
+            }
+
+            // Set keys as held
+            foreach(KeyValuePair<Keys, bool> kvp in keyMap)
+            {
+                // Set the key pressed as held
+                if (keyboardState.IsKeyDown(kvp.Key))
+                {
+                    keyMap[kvp.Key] = true;
+                }
+                // Set the key as released
+                else
+                {
+                    keyMap[kvp.Key] = false;
+                }
             }
 
             // Update if mouse is held
