@@ -13,6 +13,114 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin Audio/door_close.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/door_close.wav
+
+#begin Audio/door_open.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/door_open.wav
+
+#begin Audio/pick_hit_0.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/pick_hit_0.wav
+
+#begin Audio/pick_hit_1.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/pick_hit_1.wav
+
+#begin Audio/pick_hit_2.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/pick_hit_2.wav
+
+#begin Audio/pick_hit_3.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/pick_hit_3.wav
+
+#begin Audio/pipe_thud.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/pipe_thud.wav
+
+#begin Audio/snow_walk_0.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/snow_walk_0.wav
+
+#begin Audio/snow_walk_1.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/snow_walk_1.wav
+
+#begin Audio/snow_walk_2.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/snow_walk_2.wav
+
+#begin Audio/snow_walk_3.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/snow_walk_3.wav
+
+#begin Audio/snow_walk_4.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/snow_walk_4.wav
+
+#begin Audio/snow_walk_5.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/snow_walk_5.wav
+
+#begin Audio/snow_walk_6.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/snow_walk_6.wav
+
+#begin Audio/snow_walk_7.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/snow_walk_7.wav
+
+#begin Audio/snow_walk_8.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/snow_walk_8.wav
+
+#begin Audio/wind_ambient.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/wind_ambient.wav
+
+#begin Audio/wind_distant.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/wind_distant.wav
+
 #begin Fonts/SWTxt_12.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor

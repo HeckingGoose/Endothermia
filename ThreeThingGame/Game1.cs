@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
@@ -25,6 +26,9 @@ namespace ThreeThingGame
 
         // Textures
         private Dictionary<string, Texture2D> textures;
+
+        // Sound effects
+        private Dictionary<string, SoundEffect> soundEffects;
 
         // Window scale tracking
         private Vector2 scale;
@@ -60,6 +64,7 @@ namespace ThreeThingGame
             state = State.GameState.Menu_Main;
             fonts = new Dictionary<string, SpriteFont>();
             textures = new Dictionary<string, Texture2D>();
+            soundEffects = new Dictionary<string, SoundEffect>();
             keyMap = new Dictionary<Keys, bool>();
             mouseButtonsHeld = new bool[3];
             day = 1;
@@ -121,6 +126,11 @@ namespace ThreeThingGame
             textures.Add("Blue_Front", Content.Load<Texture2D>(@"Sprites\blue_front"));
             textures.Add("Red_Front", Content.Load<Texture2D>(@"Sprites\red_front"));
 
+            // Sound effects
+            soundEffects.Add("Pick_Hit_0", Content.Load<SoundEffect>(@"Audio\pick_hit_0"));
+            soundEffects.Add("Pick_Hit_1", Content.Load<SoundEffect>(@"Audio\pick_hit_1"));
+            soundEffects.Add("Pick_Hit_2", Content.Load<SoundEffect>(@"Audio\pick_hit_2"));
+            soundEffects.Add("Pick_Hit_3", Content.Load<SoundEffect>(@"Audio\pick_hit_3"));
 
             // Initialise menu screen
             menuScreen = new Menu_Screen(
@@ -247,6 +257,7 @@ namespace ThreeThingGame
                     gameScreen.RunLogic(
                         ref state,
                         keyMap,
+                        soundEffects,
                         gameSpeed,
                         gameTime.ElapsedGameTime.TotalSeconds,
                         keyboardState.GetPressedKeys()
@@ -254,10 +265,15 @@ namespace ThreeThingGame
                     break;
 
                 case State.GameState.DayEnd_Load:
+                    // Temp stuff
+                    state = State.GameState.DayEnd_Main;
                     break;
 
                 case State.GameState.DayEnd_Main:
-                    // Increase day
+                    // Do day end
+                    // (day would be incremented inside of day end)
+                    day++;
+                    state = State.GameState.Day_Load;
                     break;
 
             }

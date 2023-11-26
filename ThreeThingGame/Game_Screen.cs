@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework.Input;
 using System.Diagnostics;
 using static System.Formats.Asn1.AsnWriter;
+using Microsoft.Xna.Framework.Audio;
+using System.Security.Cryptography;
 
 namespace ThreeThingGame
 {
@@ -20,7 +22,7 @@ namespace ThreeThingGame
         private const uint TERMINAL_VELOCITY = 3;
         private const float COAL_CAPACITY = 5;
         private const float TARGET_TEMP = 38f;
-        private const float FREEZE_RATE = 0.003f;
+        private const float FREEZE_RATE = 0.002f;
         private const float FATAL_TEMP = 33f;
 
         // External Variables
@@ -36,6 +38,7 @@ namespace ThreeThingGame
         private Vector2 cameraPosition;
         private Vector2 snowPosition;
         private float snowSpeed;
+        private Random rng;
 
         // Players
         private Player player1;
@@ -130,6 +133,7 @@ namespace ThreeThingGame
             cameraPosition = Vector2.Zero;
             snowPosition = new Vector2(-960, -540);
             snowSpeed = 1f;
+            rng = new Random();
 
             // Create timeLeft phrase
             timeLeftPhrase = "Until Nightfall:";
@@ -144,6 +148,7 @@ namespace ThreeThingGame
         public void RunLogic(
             ref State.GameState state,
             Dictionary<Keys, bool> keyMap,
+            Dictionary<string, SoundEffect> soundEffects,
             float gameSpeed,
             double deltaTime,
             Keys[] KeysPressed
@@ -187,6 +192,7 @@ namespace ThreeThingGame
                         if (!keyMap[Keys.A])
                         {
                             player1.HeldCoal = MineTile(
+                                soundEffects,
                                 player1,
                                 ground,
                                 new Vector2(
@@ -196,7 +202,8 @@ namespace ThreeThingGame
                                 new Vector2(
                                     player1.Size.X / 2,
                                     player1.Size.Y / 2
-                                    )
+                                    ),
+                                ref rng
                                 );
                         }
                         break;
@@ -206,6 +213,7 @@ namespace ThreeThingGame
                         if (!keyMap[Keys.D])
                         {
                             player1.HeldCoal = MineTile(
+                                soundEffects,
                                 player1,
                                 ground,
                                 new Vector2(
@@ -215,7 +223,8 @@ namespace ThreeThingGame
                                 new Vector2(
                                     player1.Size.X / 2,
                                     player1.Size.Y / 2
-                                    )
+                                    ),
+                                ref rng
                                 );
                         }
                         break;
@@ -226,6 +235,7 @@ namespace ThreeThingGame
                         if (!keyMap[Keys.S])
                         {
                             player1.HeldCoal = MineTile(
+                                soundEffects,
                                 player1,
                                 ground,
                                 new Vector2(
@@ -235,7 +245,8 @@ namespace ThreeThingGame
                                 new Vector2(
                                     player1.Size.X / 2,
                                     player1.Size.X / 2
-                                    )
+                                    ),
+                                ref rng
                                 );
                         }
                         break;
@@ -245,6 +256,7 @@ namespace ThreeThingGame
                         if (!keyMap[Keys.Left])
                         {
                             player2.HeldCoal = MineTile(
+                                soundEffects,
                                 player2,
                                 ground,
                                 new Vector2(
@@ -254,7 +266,8 @@ namespace ThreeThingGame
                                 new Vector2(
                                     player2.Size.X / 2,
                                     player2.Size.Y / 2
-                                    )
+                                    ),
+                                ref rng
                                 );
                         }
                         break;
@@ -264,6 +277,7 @@ namespace ThreeThingGame
                         if (!keyMap[Keys.Right])
                         {
                             player2.HeldCoal = MineTile(
+                                soundEffects,
                                 player2,
                                 ground,
                                 new Vector2(
@@ -273,7 +287,8 @@ namespace ThreeThingGame
                                 new Vector2(
                                     player2.Size.X / 2,
                                     player2.Size.Y / 2
-                                    )
+                                    ),
+                                ref rng
                                 );
                         }
                         break;
@@ -284,6 +299,7 @@ namespace ThreeThingGame
                         if (!keyMap[Keys.Down])
                         {
                             player2.HeldCoal = MineTile(
+                                soundEffects,
                                 player2,
                                 ground,
                                 new Vector2(
@@ -293,7 +309,8 @@ namespace ThreeThingGame
                                 new Vector2(
                                     player2.Size.X / 2,
                                     player2.Size.X / 2
-                                    )
+                                    ),
+                                ref rng
                                 );
                         }
                         break;
@@ -810,7 +827,7 @@ namespace ThreeThingGame
                 0
                 );
         }
-        private static float MineTile(Player player, Ground ground, Vector2 point, Vector2 range)
+        private static float MineTile(Dictionary<string, SoundEffect> soundEffects, Player player, Ground ground, Vector2 point, Vector2 range, ref Random rng)
         {
             float heldCoal = player.HeldCoal;
 
@@ -842,6 +859,7 @@ namespace ThreeThingGame
                         ground.Tiles[tile.y, tile.x].Filled = false;
                         break;
                 }
+                soundEffects[$"Pick_Hit_{rng.Next(4)}"].Play();
             }
             return heldCoal;
         }
