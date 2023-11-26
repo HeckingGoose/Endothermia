@@ -13,16 +13,27 @@ namespace ThreeThingGame
         // Variables
         private uint _health;
         private float _temperature;
-        private byte _ID;
+        private string _ID;
         private uint _heldCoal;
         private uint _coalCapacity;
         private Vector2 _position;
         private Vector2 _velocity;
         private Vector2 _size;
         private Texture2D _texture;
+        private State _state;
+
+        public enum State
+        {
+            Climbing,
+            Mining_Right,
+            Mining_Left,
+            Mining_Down,
+            Mining_Up,
+            Idle
+        }
 
         // Constructors
-        public Player(byte ID)
+        public Player(string ID)
         {
             _health = 100;
             _temperature = 38;
@@ -33,10 +44,11 @@ namespace ThreeThingGame
             _velocity = Vector2.Zero;
             _size = Vector2.Zero;
             _texture = null;
+            _state = State.Idle;
         }
 
         public Player(
-            byte ID,
+            string ID,
             uint coalCapacity,
             Vector2 position,
             Texture2D texture,
@@ -52,11 +64,12 @@ namespace ThreeThingGame
             _velocity = Vector2.Zero;
             _texture = texture;
             _size = size;
+            _state = State.Idle;
         }
         public Player(
             uint health,
             float temperature,
-            byte ID,
+            string ID,
             uint coalCapacity,
             Vector2 position,
             Vector2 velocity,
@@ -73,6 +86,36 @@ namespace ThreeThingGame
             _velocity = velocity;
             _texture = texture;
             _size = size;
+            _state = State.Idle;
+        }
+
+        //Static Methods
+        public static Texture2D SetTexture(
+            Player player,
+            Dictionary<string, Texture2D> textures
+            )
+        {
+            switch (player.PlayerState)
+            {
+                case State.Climbing:
+                    player.Texture = textures[$"{player.ID}_Climb"];
+                    break;
+                case State.Mining_Right:
+                    player.Texture = textures[$"{player.ID}_Mine_Right"];
+                    break;
+                case State.Mining_Left:
+                    player.Texture = textures[$"{player.ID}_Mine_Left"];
+                    break;
+                case State.Mining_Down:
+                    player.Texture = textures[$"{player.ID}_Mine_Down"];
+                    break;
+                case State.Mining_Up:
+                    player.Texture = textures[$"{player.ID}_Mine_Up"];
+                    break;
+                case State.Idle:
+                    player.Texture = textures[$"{player.ID}_Front"];
+                    break;
+            }
         }
 
         // Methods
@@ -88,7 +131,7 @@ namespace ThreeThingGame
             set { _temperature = value; }
         }
 
-        public byte ID
+        public string ID
         {
             get { return _ID; }
         }
@@ -127,6 +170,12 @@ namespace ThreeThingGame
         {
             get { return _texture; }
             set { _texture = value; }
+        }
+
+        public State PlayerState
+        {
+            get { return _state; }
+            set { _state = value; }
         }
     }
 }

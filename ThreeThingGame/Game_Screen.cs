@@ -74,14 +74,14 @@ namespace ThreeThingGame
 
             // Create new players
             player1 = new Player(
-                0,
+                "Blue",
                 COAL_CAPACITY,
                 new Vector2(50, 180),
                 textures["Blue_Front"],
                 new Vector2(60, 120)
                 );
             player2 = new Player(
-                1,
+                "Red",
                 COAL_CAPACITY,
                 new Vector2(120, 180),
                 textures["Red_Front"],
@@ -850,19 +850,9 @@ namespace ThreeThingGame
             float minScale
             )
         {
-            string iconName = String.Empty;
-            switch (player.ID)
-            {
-                case 0: // Blue player
-                    iconName = "Blue_Icon";
-                    break;
-                case 1: // Red Player
-                    iconName = "Red_Icon";
-                    break;
-                default: // Default icon
-                    iconName = "Blue_Icon";
-                    break;
-            }
+   
+            string iconName = $"{player.ID}_Icon";
+
             spriteBatch.Draw(
                 textures[iconName],
                 baseRect,
