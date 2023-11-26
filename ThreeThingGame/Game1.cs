@@ -125,7 +125,19 @@ namespace ThreeThingGame
 
             // Player sprites
             textures.Add("Blue_Front", Content.Load<Texture2D>(@"Sprites\blue_front"));
+            textures.Add("Blue_Mine_Right", Content.Load<Texture2D>(@"Sprites\red_mine_right"));
+            textures.Add("Blue_Mine_Left", Content.Load<Texture2D>(@"Sprites\red_mine_left"));
+
             textures.Add("Red_Front", Content.Load<Texture2D>(@"Sprites\red_front"));
+            textures.Add("Red_Mine_Right", Content.Load<Texture2D>(@"Sprites\red_mine_right"));
+            textures.Add("Red_Mine_Left", Content.Load<Texture2D>(@"Sprites\red_mine_left"));
+
+            textures.Add("Red_Climb", Content.Load<Texture2D>(@"Sprites\red_front"));
+            textures.Add("Red_Mine_Down", Content.Load<Texture2D>(@"Sprites\red_front"));
+            textures.Add("Red_Mine_Up", Content.Load<Texture2D>(@"Sprites\red_front"));
+            textures.Add("Blue_Climb", Content.Load<Texture2D>(@"Sprites\red_front"));
+            textures.Add("Blue_Mine_Down", Content.Load<Texture2D>(@"Sprites\red_front"));
+            textures.Add("Blue_Mine_Up", Content.Load<Texture2D>(@"Sprites\red_front"));
 
             // Sound effects
             soundEffects.Add("Pick_Hit_0", Content.Load<SoundEffect>(@"Audio\pick_hit_0"));
