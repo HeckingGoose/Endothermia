@@ -202,11 +202,11 @@ namespace ThreeThingGame
 
             if (player1.Temperature < FATAL_TEMP)
             {
-                player1.Health -= (float)deltaTime * 0.5f;
+                player1.Health -= (float)deltaTime * 5f;
             }
             if (player2.Temperature < FATAL_TEMP)
             {
-                player2.Health -= (float)deltaTime * 0.5f;
+                player2.Health -= (float)deltaTime * 5f;
             }
 
             if (player1.Health < 0 || player2.Health < 0)
@@ -1135,7 +1135,7 @@ namespace ThreeThingGame
                 );
             spriteBatch.DrawString(
                 fonts["SWTxt_12"],
-                $"Health: {player.Health}",
+                $"Health: {Math.Round(player.Health, 0)}",
                 new Vector2(
                     (baseRect.X + baseRect.Width) + 10 * scale.X,
                     (baseRect.Y) + 10 * scale.Y

@@ -147,11 +147,11 @@ namespace ThreeThingGame
 
             textures.Add("Red_Climb", Content.Load<Texture2D>(@"Sprites\red_climb"));
             textures.Add("Red_Mine_Down", Content.Load<Texture2D>(@"Sprites\red_mine_down"));
-            textures.Add("Red_Mine_Up", Content.Load<Texture2D>(@"Sprites\red_front"));
+            textures.Add("Red_Mine_Up", Content.Load<Texture2D>(@"Sprites\red_mine_up"));
 
             textures.Add("Blue_Climb", Content.Load<Texture2D>(@"Sprites\blue_climb"));
             textures.Add("Blue_Mine_Down", Content.Load<Texture2D>(@"Sprites\blue_mine_down"));
-            textures.Add("Blue_Mine_Up", Content.Load<Texture2D>(@"Sprites\blue_front"));
+            textures.Add("Blue_Mine_Up", Content.Load<Texture2D>(@"Sprites\blue_mine_up"));
 
             // Sound effects
             soundEffects.Add("Pick_Hit_0", Content.Load<SoundEffect>(@"Audio\pick_hit_0"));
