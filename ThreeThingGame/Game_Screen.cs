@@ -371,6 +371,32 @@ namespace ThreeThingGame
                                 );
                         }
                         break;
+                    case Keys.W:
+                        // P1 go up
+
+                        if (player1.Position.Y + player1.Size.Y > 300)
+                        {
+                            tempVelPlayer1.Y = -(gameSpeed * MAX_SPEED);
+                        }
+
+                        if (!keyMap[Keys.W])
+                        {
+                            player1.HeldCoal = MineTile(
+                                soundEffects,
+                                player1,
+                                ground,
+                                new Vector2(
+                                    player1.Position.X + player1.Size.X / 2,
+                                    player1.Position.Y
+                                    ),
+                                new Vector2(
+                                    player1.Size.X / 2,
+                                    player1.Size.X / 2
+                                    ),
+                                ref rng
+                                );
+                        }
+                        break;
                 }
             }
 
