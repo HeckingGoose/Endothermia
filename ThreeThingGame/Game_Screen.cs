@@ -20,7 +20,7 @@ namespace ThreeThingGame
         private const float DECELERATION_RATE = 0.5f;
         private const float GRAVITY = 0.2f;
         private const uint TERMINAL_VELOCITY = 3;
-        private const float COAL_CAPACITY = 5;
+        private const uint COAL_CAPACITY = 5;
         private const float TARGET_TEMP = 38f;
         private const float FREEZE_RATE = 0.002f;
         private const float FATAL_TEMP = 33f;
@@ -858,7 +858,7 @@ namespace ThreeThingGame
                 );
             spriteBatch.DrawString(
                 fonts["SWTxt_12"],
-                $"Coal: {Math.Round(player.HeldCoal, 1)}/{player.CoalCapacity}",
+                $"Coal: {player.HeldCoal}/{player.CoalCapacity}",
                 new Vector2(
                     (baseRect.X + baseRect.Width) + 10 * scale.X,
                     (baseRect.Y) + 40 * scale.Y
@@ -885,9 +885,9 @@ namespace ThreeThingGame
                 0
                 );
         }
-        private static float MineTile(Dictionary<string, SoundEffect> soundEffects, Player player, Ground ground, Vector2 point, Vector2 range, ref Random rng)
+        private static uint MineTile(Dictionary<string, SoundEffect> soundEffects, Player player, Ground ground, Vector2 point, Vector2 range, ref Random rng)
         {
-            float heldCoal = player.HeldCoal;
+            uint heldCoal = player.HeldCoal;
 
             (int y, int x) tile = Ground.GetNearestTileToPoint(
                 point,

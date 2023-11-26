@@ -14,8 +14,8 @@ namespace ThreeThingGame
         private uint _health;
         private float _temperature;
         private byte _ID;
-        private float _heldCoal;
-        private float _coalCapacity;
+        private uint _heldCoal;
+        private uint _coalCapacity;
         private Vector2 _position;
         private Vector2 _velocity;
         private Vector2 _size;
@@ -37,7 +37,7 @@ namespace ThreeThingGame
 
         public Player(
             byte ID,
-            float coalCapacity,
+            uint coalCapacity,
             Vector2 position,
             Texture2D texture,
             Vector2 size
@@ -57,7 +57,7 @@ namespace ThreeThingGame
             uint health,
             float temperature,
             byte ID,
-            float coalCapacity,
+            uint coalCapacity,
             Vector2 position,
             Vector2 velocity,
             Vector2 size,
@@ -93,13 +93,13 @@ namespace ThreeThingGame
             get { return _ID; }
         }
 
-        public float HeldCoal
+        public uint HeldCoal
         {
             get { return _heldCoal; }
             set { _heldCoal = value; }
         }
 
-        public float CoalCapacity
+        public uint CoalCapacity
         {
             get { return _coalCapacity; }
             set { _coalCapacity = value; }
