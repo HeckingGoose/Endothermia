@@ -158,7 +158,7 @@ namespace ThreeThingGame
             Dictionary<Keys, bool> keyMap,
             Dictionary<string, SoundEffect> soundEffects,
             Dictionary<string, Texture2D> textures,
-            ref uint totalCoal,
+            ref int totalCoal,
             float gameSpeed,
             double deltaTime,
             Keys[] KeysPressed
@@ -198,6 +198,20 @@ namespace ThreeThingGame
                 {
                     player2.Temperature += 0.3f;
                 }
+            }
+
+            if (player1.Temperature < FATAL_TEMP)
+            {
+                player1.Health -= (float)deltaTime * 0.5f;
+            }
+            if (player2.Temperature < FATAL_TEMP)
+            {
+                player2.Health -= (float)deltaTime * 0.5f;
+            }
+
+            if (player1.Health < 0 || player2.Health < 0)
+            {
+                state = State.GameState.Death_Load;
             }
 
             // If player is walking on the surface (uses hardcoded values, ew)
@@ -569,7 +583,7 @@ namespace ThreeThingGame
                             }
                             else if (player1.Position.X + player1.Size.X / 2 < 200) // If P1 near coal deposit
                             {
-                                totalCoal += player1.HeldCoal;
+                                totalCoal += (int)player1.HeldCoal;
                                 player1.HeldCoal = 0;
                             }
                         }
@@ -583,7 +597,7 @@ namespace ThreeThingGame
                             }
                             else if (player2.Position.X + player2.Size.X / 2 < 200) // If P2 near coal deposit
                             {
-                                totalCoal += player2.HeldCoal;
+                                totalCoal += (int)player2.HeldCoal;
                                 player2.HeldCoal = 0;
                             }
                         }

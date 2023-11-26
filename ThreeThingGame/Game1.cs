@@ -32,6 +32,7 @@ namespace ThreeThingGame
 
         // Window scale tracking
         private Vector2 scale;
+        private string deathText = "You lose!";
 
         // Screens
         private State.GameState state;
@@ -40,6 +41,7 @@ namespace ThreeThingGame
         private Game_Screen gameScreen;
         private Day_Screen dayScreen;
         private DayEnd_Screen dayEndScreen;
+        private Death_Screen deathScreen;
 
         // Mouse held
         private bool[] mouseButtonsHeld;
@@ -51,7 +53,9 @@ namespace ThreeThingGame
         private Dictionary<Keys, bool> keyMap;
 
         // Persistent game variables
-        private uint totalCoal;
+        private int totalCoal;
+        private int coalQuota;
+        private int heatingCost;
 
         // ENDVAR
 
@@ -73,6 +77,8 @@ namespace ThreeThingGame
             mouseButtonsHeld = new bool[3];
             day = 0;
             totalCoal = 0;
+            coalQuota = 15;
+            heatingCost = 5;
 
             // Track utility keys
             keyMap.Add(Keys.F11, false);
@@ -173,6 +179,13 @@ namespace ThreeThingGame
 
         protected override void Update(GameTime gameTime)
         {
+            if (day > 30)
+            {
+                // Win condition
+                deathText = "You Win!";
+                state = State.GameState.Death_Load;
+            }
+            
             // Calculate game speed
             float gameSpeed = (float)gameTime.ElapsedGameTime.TotalSeconds * TARGET_FRAMERATE;
 
@@ -308,13 +321,33 @@ namespace ThreeThingGame
                         ref _graphics,
                         ref _spriteBatch,
                         fonts,
-                        textures
+                        textures,
+                        ref totalCoal,
+                        coalQuota,
+                        heatingCost
                         );
                     state = State.GameState.DayEnd_Main;
                     break;
 
                 case State.GameState.DayEnd_Main:
-                    introScreen.RunLogic(
+                    dayEndScreen.RunLogic(
+                        ref state,
+                        mouseButtonsHeld,
+                        mouseState,
+                        scale
+                        );
+                    break;
+                case State.GameState.Death_Load:
+                    deathScreen = new Death_Screen(
+                        ref _graphics,
+                        ref _spriteBatch,
+                        fonts,
+                        textures
+                        );
+                    state = State.GameState.Death_Main;
+                    break;
+                case State.GameState.Death_Main:
+                    deathScreen.RunLogic(
                         ref state,
                         mouseButtonsHeld,
                         mouseState,
@@ -419,7 +452,20 @@ namespace ThreeThingGame
                     dayEndScreen.RunGraphics(
                         _spriteBatch,
                         fonts,
-                        scale
+                        scale,
+                        coalQuota,
+                        heatingCost,
+                        totalCoal,
+                        day
+                        );
+                    break;
+                case State.GameState.Death_Main:
+                    GraphicsDevice.Clear(new Color(40, 40, 40, 255));
+                    deathScreen.RunGraphics(
+                        _spriteBatch,
+                        fonts,
+                        scale,
+                        deathText
                         );
                     break;
             }

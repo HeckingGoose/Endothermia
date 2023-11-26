@@ -1,15 +1,15 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework.Input;
 
 namespace ThreeThingGame
 {
-    internal class DayEnd_Screen
+    internal class Death_Screen
     {
         // External Variables
         private GraphicsDeviceManager _graphics;
@@ -20,41 +20,30 @@ namespace ThreeThingGame
 
 
         // Constructor
-        public DayEnd_Screen(
+        public Death_Screen(
             ref GraphicsDeviceManager graphics,
             ref SpriteBatch spriteBatch,
             Dictionary<string, SpriteFont> fonts,
-            Dictionary<string, Texture2D> textures,
-            ref int totalCoal,
-            int coalQuota,
-            int heatingCost
+            Dictionary<string, Texture2D> textures
             )
         {
-            _graphics = graphics;
-            _spriteBatch = spriteBatch;
-
-            Button continueButton = new Button(
-                "Continue",
+            Button quitButton = new Button(
+                "Quit",
                 false,
                 Color.Black,
                 Color.White,
                 fonts["SWTxt_24"],
                 textures["ButtonTexture"],
                 new Rectangle(
-                    740,
-                    470,
-                    200,
+                    430,
+                    375,
+                    100,
                     50
                     ),
-                GoToDay
+                Quit
                 );
-
-            buttons.Add(continueButton);
-
-            totalCoal -= heatingCost + coalQuota;
+            buttons.Add(quitButton);
         }
-
-        // Methods
         public void RunLogic(
             ref State.GameState state,
             bool[] mouseButtonsHeld,
@@ -82,67 +71,22 @@ namespace ThreeThingGame
             SpriteBatch spriteBatch,
             Dictionary<string, SpriteFont> fonts,
             Vector2 scale,
-            int coalQuota,
-            int heatingCost,
-            int totalCoal,
-            int day
+            string deathText
             )
         {
             float minScale = Math.Min(scale.X, scale.Y);
-            float spacing_36 = fonts["SWTxt_36"].MeasureString("A").Y + 2;
-            float spacing_24 = fonts["SWTxt_24"].MeasureString("A").Y + 2;
+
+            Vector2 length = fonts["SWTxt_48"].MeasureString(deathText);
 
             // Draw some text
             spriteBatch.DrawString(
-                fonts["SWTxt_36"],
-                $"End of day {day} stats:",
-                new Vector2(10, 10),
+                fonts["SWTxt_48"],
+                deathText,
+                new Vector2(
+                    480 - length.X / 2,
+                    200
+                ),
                 Color.White,
-                0,
-                Vector2.Zero,
-                minScale,
-                0,
-                0
-                );
-
-            spriteBatch.DrawString(
-                fonts["SWTxt_24"],
-                $"Coal Quota: -{coalQuota}",
-                new Vector2(10, 10 + spacing_36),
-                Color.Red,
-                0,
-                Vector2.Zero,
-                minScale,
-                0,
-                0
-                );
-            spriteBatch.DrawString(
-                fonts["SWTxt_24"],
-                $"Heating Cost: -{heatingCost}",
-                new Vector2(10, 10 + spacing_36 + spacing_24),
-                Color.Red,
-                0,
-                Vector2.Zero,
-                minScale,
-                0,
-                0
-                );
-
-            Color tem = Color.Gray;
-            if (totalCoal > 0)
-            {
-                tem = Color.Green;
-            }
-            else if (totalCoal < 0)
-            {
-                tem = Color.Red;
-                buttons[0].OnClick = GotToDeath;
-            }
-            spriteBatch.DrawString(
-                fonts["SWTxt_24"],
-                $"Total Coal: {totalCoal}",
-                new Vector2(10, 10 + spacing_36 + spacing_24 * 2),
-                tem,
                 0,
                 Vector2.Zero,
                 minScale,
@@ -175,13 +119,9 @@ namespace ThreeThingGame
                     );
             }
         }
-        private void GoToDay(ref State.GameState state)
+            private void Quit(ref State.GameState state)
         {
-            state = State.GameState.Day_Load;
-        }
-        private void GotToDeath(ref State.GameState state)
-        {
-            state = State.GameState.Death_Load;
+            Environment.Exit(0);
         }
     }
 }

@@ -11,7 +11,7 @@ namespace ThreeThingGame
     internal class Player
     {
         // Variables
-        private uint _health;
+        private float _health;
         private float _temperature;
         private string _ID;
         private uint _heldCoal;
@@ -67,7 +67,7 @@ namespace ThreeThingGame
             _state = State.Idle;
         }
         public Player(
-            uint health,
+            float health,
             float temperature,
             string ID,
             uint coalCapacity,
@@ -90,7 +90,7 @@ namespace ThreeThingGame
         }
 
         // Methods
-        public uint Health
+        public float Health
         {
             get { return _health; }
             set { _health = value; }
