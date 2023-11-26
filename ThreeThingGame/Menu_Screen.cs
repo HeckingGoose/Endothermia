@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -27,8 +28,11 @@ namespace ThreeThingGame
             Dictionary<string, SpriteFont> fonts
             )
         {
+            // Assign values
             _graphics = graphics;
             _spriteBatch = spriteBatch;
+
+            // Create new game button
             Button newGame = new Button(
                 text: "NEW GAME",
                 wordWrap: false,
@@ -39,17 +43,21 @@ namespace ThreeThingGame
                 rect: new Rectangle(355, 420, 250, 50),
                 onClick: NewGameStart
                 );
-            buttons.Add(newGame);
+
+            // Create exit game button
             Button exitGame = new Button(
                 text: "X",
                 wordWrap: false,
                 font: fonts["SWTxt_12"],
                 textColour: Color.White,
-                backColour: new Color(255, 200, 200, 255),
+                backColour: new Color(150, 50, 50, 255),
                 texture: textures["ButtonTexture"],
                 rect: new Rectangle(935, 0, 25, 25),
                 onClick: ExitGame
                 );
+
+            // Cache buttons
+            buttons.Add(newGame);
             buttons.Add(exitGame);
         }
 
@@ -57,17 +65,18 @@ namespace ThreeThingGame
         public void RunLogic(
             ref State.GameState state,
             bool[] mouseButtonsHeld,
-            MouseState mouseState
+            MouseState mouseState,
+            Vector2 scale
             )
         {
 
             // Run logic here
             foreach(Button button in buttons)
             {
-                if (mouseState.Position.X >= button.Rect.X 
-                    && mouseState.Position.X <= button.Rect.X + button.Rect.Width
-                    && mouseState.Position.Y >= button.Rect.Y
-                    && mouseState.Position.Y <= button.Rect.Y + button.Rect.Height
+                if (mouseState.Position.X >= (button.Rect.X) * scale.X
+                    && mouseState.Position.X <= (button.Rect.X + button.Rect.Width) * scale.Y
+                    && mouseState.Position.Y >= (button.Rect.Y) * scale.X
+                    && mouseState.Position.Y <= (button.Rect.Y + button.Rect.Height) * scale.Y
                     )
                 {
                     if (!mouseButtonsHeld[0] 
@@ -80,20 +89,51 @@ namespace ThreeThingGame
         }
         public void RunGraphics(
             SpriteBatch spriteBatch,
+            Vector2 scale,
             Dictionary<string, Texture2D> textures
             )
         {
-            spriteBatch.Draw(textures["TitleTexture"], new Rectangle(280, 80, 400, 300), Color.White);
+            // Draw sprite
+            spriteBatch.Draw(
+                textures["TitleTexture"],
+                new Rectangle(
+                    (int)(280 * scale.X),
+                    (int)(80 * scale.Y),
+                    (int)(400 * scale.X),
+                    (int)(300 * scale.Y)
+                    ),
+                Color.White
+                );
+            
+            // Draw buttons
             foreach(Button button in buttons )
             {
-                spriteBatch.Draw(button.Texture, button.Rect, button.BackColour);
-                spriteBatch.DrawString(button.Font, button.Text, new Vector2(button.Rect.X, button.Rect.Y), button.TextColour);
+                spriteBatch.Draw(
+                    button.Texture,
+                    new Rectangle(
+                        (int)(button.Rect.X * scale.X),
+                        (int)(button.Rect.Y * scale.Y),
+                        (int)(button.Rect.Width * scale.X),
+                        (int)(button.Rect.Height * scale.Y)
+                        ),
+                    button.BackColour);
+                spriteBatch.DrawString(
+                    button.Font,
+                    button.Text,
+                    button.TextPosition * scale,
+                    button.TextColour,
+                    0,
+                    Vector2.Zero,
+                    Math.Min(scale.X, scale.Y),
+                    0,
+                    0
+                    );
             }
         }
 
         private void NewGameStart(ref State.GameState state)
         {
-            state = State.GameState.Day_Load;
+            state = State.GameState.Day_Load;//State.GameState.Intro_Load;
         }
 
         private void ExitGame(ref State.GameState state)

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
@@ -16,6 +17,7 @@ namespace ThreeThingGame
         private const int TARGET_FRAMERATE = 60;
         private const int TARGET_WIDTH = 960;
         private const int TARGET_HEIGHT = 540;
+        private const int DAYTIME_SECONDS = 240;
         // ENDCONST
 
         // VAR
@@ -24,6 +26,9 @@ namespace ThreeThingGame
 
         // Textures
         private Dictionary<string, Texture2D> textures;
+
+        // Sound effects
+        private Dictionary<string, SoundEffect> soundEffects;
 
         // Window scale tracking
         private Vector2 scale;
@@ -41,6 +46,9 @@ namespace ThreeThingGame
         // Time tracking
         private int day;
 
+        // Keymap
+        private Dictionary<Keys, bool> keyMap;
+
         // ENDVAR
 
         public Game1()
@@ -56,8 +64,21 @@ namespace ThreeThingGame
             state = State.GameState.Menu_Main;
             fonts = new Dictionary<string, SpriteFont>();
             textures = new Dictionary<string, Texture2D>();
+            soundEffects = new Dictionary<string, SoundEffect>();
+            keyMap = new Dictionary<Keys, bool>();
             mouseButtonsHeld = new bool[3];
             day = 1;
+
+            // Track utility keys
+            keyMap.Add(Keys.F11, false);
+            keyMap.Add(Keys.W, false);
+            keyMap.Add(Keys.A, false);
+            keyMap.Add(Keys.S, false);
+            keyMap.Add(Keys.D, false);
+            keyMap.Add(Keys.Up, false);
+            keyMap.Add(Keys.Left, false);
+            keyMap.Add(Keys.Down, false);
+            keyMap.Add(Keys.Right, false);
 
             // Initialise window size
             _graphics.PreferredBackBufferWidth = TARGET_WIDTH;
@@ -83,13 +104,44 @@ namespace ThreeThingGame
             fonts.Add("SWTxt_36", Content.Load<SpriteFont>(@"Fonts\SWTxt_36"));
             fonts.Add("SWTxt_48", Content.Load<SpriteFont>(@"Fonts\SWTxt_48"));
 
+            // Title screen
             textures.Add("ButtonTexture", Content.Load<Texture2D>(@"Sprites\ButtonTexture"));
             textures.Add("TitleTexture", Content.Load<Texture2D>(@"Sprites\blackTitle"));
+
+            // Gameplay
+            textures.Add("Snow", Content.Load<Texture2D>(@"Sprites\snow"));
             textures.Add("Coal", Content.Load<Texture2D>(@"Sprites\coal"));
-            textures.Add("Oil", Content.Load<Texture2D>(@"Sprites\Oil_Full"));
+            textures.Add("Oil", Content.Load<Texture2D>(@"Sprites\oilFull"));
             textures.Add("Gas", Content.Load<Texture2D>(@"Sprites\gas"));
             textures.Add("Rock", Content.Load<Texture2D>(@"Sprites\rock"));
+            textures.Add("Bedrock", Content.Load<Texture2D>(@"Sprites\bedrock"));
+            textures.Add("Empty", Content.Load<Texture2D>(@"Sprites\empty"));
+            textures.Add("GameplayBase", Content.Load<Texture2D>(@"Sprites\gameplayBase"));
+            textures.Add("Snow_Overlay", Content.Load<Texture2D>(@"Sprites\snow_overlay"));
 
+            // UI
+            textures.Add("Blue_Icon", Content.Load<Texture2D>(@"Sprites\blue_icon"));
+            textures.Add("Red_Icon", Content.Load<Texture2D>(@"Sprites\red_icon"));
+
+            // Player sprites
+            textures.Add("Blue_Front", Content.Load<Texture2D>(@"Sprites\blue_front"));
+            textures.Add("Red_Front", Content.Load<Texture2D>(@"Sprites\red_front"));
+
+            // Sound effects
+            soundEffects.Add("Pick_Hit_0", Content.Load<SoundEffect>(@"Audio\pick_hit_0"));
+            soundEffects.Add("Pick_Hit_1", Content.Load<SoundEffect>(@"Audio\pick_hit_1"));
+            soundEffects.Add("Pick_Hit_2", Content.Load<SoundEffect>(@"Audio\pick_hit_2"));
+            soundEffects.Add("Pick_Hit_3", Content.Load<SoundEffect>(@"Audio\pick_hit_3"));
+
+            soundEffects.Add("Snow_Walk_0", Content.Load<SoundEffect>(@"Audio\snow_walk_0"));
+            soundEffects.Add("Snow_Walk_1", Content.Load<SoundEffect>(@"Audio\snow_walk_1"));
+            soundEffects.Add("Snow_Walk_2", Content.Load<SoundEffect>(@"Audio\snow_walk_2"));
+            soundEffects.Add("Snow_Walk_3", Content.Load<SoundEffect>(@"Audio\snow_walk_3"));
+            soundEffects.Add("Snow_Walk_4", Content.Load<SoundEffect>(@"Audio\snow_walk_4"));
+            soundEffects.Add("Snow_Walk_5", Content.Load<SoundEffect>(@"Audio\snow_walk_5"));
+            soundEffects.Add("Snow_Walk_6", Content.Load<SoundEffect>(@"Audio\snow_walk_6"));
+            soundEffects.Add("Snow_Walk_7", Content.Load<SoundEffect>(@"Audio\snow_walk_7"));
+            soundEffects.Add("Snow_Walk_8", Content.Load<SoundEffect>(@"Audio\snow_walk_8"));
 
             // Initialise menu screen
             menuScreen = new Menu_Screen(
@@ -98,20 +150,61 @@ namespace ThreeThingGame
                 textures,
                 fonts
                 );
-
-            // Initialise intro screen
-            introScreen = new Intro_Screen(
-                ref _graphics,
-                ref _spriteBatch
-                );
-
         }
 
         protected override void Update(GameTime gameTime)
         {
+            // Calculate game speed
+            float gameSpeed = (float)gameTime.ElapsedGameTime.TotalSeconds * TARGET_FRAMERATE;
+
+            // Get mouse state
             MouseState mouseState = Mouse.GetState();
 
-            float gameSpeed = (float)gameTime.ElapsedGameTime.TotalSeconds * TARGET_FRAMERATE;
+            // Get keyboard state
+            KeyboardState keyboardState = Keyboard.GetState();
+
+            // Toggle fullscreen
+            if (keyboardState.IsKeyDown(Keys.F11) && !keyMap[Keys.F11])
+            {
+                // Set F11 to be pressed
+                keyMap[Keys.F11] = true;
+
+                // Flip display mode
+                _graphics.IsFullScreen = !_graphics.IsFullScreen;
+
+                if (_graphics.IsFullScreen)
+                {
+                    // Switch resolution to match monitor
+                    _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+                    _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+
+                    // Set game window to borderless
+                    _graphics.HardwareModeSwitch = false;
+
+                    // Set scale
+                    scale.X = _graphics.PreferredBackBufferWidth / TARGET_WIDTH;
+                    scale.Y = _graphics.PreferredBackBufferHeight / TARGET_HEIGHT;
+                }
+                else
+                {
+                    // Switch resolution to meet target
+                    _graphics.PreferredBackBufferWidth = TARGET_WIDTH;
+                    _graphics.PreferredBackBufferHeight = TARGET_HEIGHT;
+
+                    // Set game window to windowed
+                    _graphics.HardwareModeSwitch = true;
+
+                    // Set scale
+                    scale.X = _graphics.PreferredBackBufferWidth / TARGET_WIDTH;
+                    scale.Y = _graphics.PreferredBackBufferHeight / TARGET_HEIGHT;
+                }
+
+                _graphics.ApplyChanges();
+            }
+            else if (!keyboardState.IsKeyDown(Keys.F11) && keyMap[Keys.F11])
+            {
+                keyMap[Keys.F11] = false;
+            }
 
             switch (state)
             {
@@ -119,11 +212,17 @@ namespace ThreeThingGame
                     menuScreen.RunLogic(
                         ref state,
                         mouseButtonsHeld,
-                        mouseState
+                        mouseState,
+                        scale
                         );
                     break;
 
                 case State.GameState.Intro_Load:
+                    introScreen = new Intro_Screen(
+                        ref _graphics,
+                        ref _spriteBatch
+                        );
+                    state = State.GameState.Intro_Main;
                     break;
 
                 case State.GameState.Intro_Main:
@@ -152,6 +251,9 @@ namespace ThreeThingGame
                     gameScreen = new Game_Screen(
                         ref _graphics,
                         ref _spriteBatch,
+                        DAYTIME_SECONDS,
+                        fonts,
+                        textures,
                         19,
                         25,
                         0.05f,
@@ -164,21 +266,45 @@ namespace ThreeThingGame
 
                 case State.GameState.Game_Main:
                     gameScreen.RunLogic(
+                        ref state,
+                        keyMap,
+                        soundEffects,
                         gameSpeed,
-                        Keyboard.GetState().GetPressedKeys()
+                        gameTime.ElapsedGameTime.TotalSeconds,
+                        keyboardState.GetPressedKeys()
                         );
                     break;
 
                 case State.GameState.DayEnd_Load:
+                    // Temp stuff
+                    state = State.GameState.DayEnd_Main;
                     break;
 
                 case State.GameState.DayEnd_Main:
-                    // Increase day
+                    // Do day end
+                    // (day would be incremented inside of day end)
+                    day++;
+                    state = State.GameState.Day_Load;
                     break;
 
             }
 
+            // Set keys as held
+            foreach(KeyValuePair<Keys, bool> kvp in keyMap)
+            {
+                // Set the key pressed as held
+                if (keyboardState.IsKeyDown(kvp.Key))
+                {
+                    keyMap[kvp.Key] = true;
+                }
+                // Set the key as released
+                else
+                {
+                    keyMap[kvp.Key] = false;
+                }
+            }
 
+            // Update if mouse is held
             if (mouseState.LeftButton == ButtonState.Pressed)
             {
                 mouseButtonsHeld[0] = true;
@@ -221,6 +347,7 @@ namespace ThreeThingGame
                     GraphicsDevice.Clear(Color.CornflowerBlue);
                     menuScreen.RunGraphics(
                         _spriteBatch,
+                        scale,
                         textures
                         );
                     break;
@@ -229,6 +356,7 @@ namespace ThreeThingGame
                     GraphicsDevice.Clear(Color.Black);
                     dayScreen.RunGraphics(
                         _spriteBatch,
+                        scale,
                         fonts
                         );
                     break;
@@ -244,7 +372,9 @@ namespace ThreeThingGame
                     GraphicsDevice.Clear(Color.CornflowerBlue);
                     gameScreen.RunGraphics(
                         _spriteBatch,
-                        textures
+                        scale,
+                        textures,
+                        fonts
                         );
                     break;
                 case State.GameState.DayEnd_Main:
