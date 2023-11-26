@@ -418,7 +418,7 @@ namespace ThreeThingGame
                 );
 
             GroundTile[] lowTiles = Ground.GetSurface(
-                ground,
+                lowestGround,
                 new Rectangle(
                     0,
                     1300,
