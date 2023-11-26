@@ -436,8 +436,8 @@ namespace ThreeThingGame
 
                     // Check range
                     Vector2 dist = new Vector2(
-                        (int)Math.Abs(Math.Abs(tilePos.x) - Math.Abs(point.X)),
-                        (int)Math.Abs(Math.Abs(tilePos.y) - Math.Abs(point.Y))
+                        (int)Math.Abs(Math.Abs(tilePos.x + innerScale.X / 2) - Math.Abs(point.X)),
+                        (int)Math.Abs(Math.Abs(tilePos.y + innerScale.Y / 2) - Math.Abs(point.Y))
                         );
 
                     if (ground.Tiles[y, x].Filled)

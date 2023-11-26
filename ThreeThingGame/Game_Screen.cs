@@ -19,6 +19,9 @@ namespace ThreeThingGame
         private const float GRAVITY = 0.2f;
         private const uint TERMINAL_VELOCITY = 3;
         private const float COAL_CAPACITY = 5;
+        private const float TARGET_TEMP = 38f;
+        private const float FREEZE_RATE = 0.003f;
+        private const float FATAL_TEMP = 33f;
 
         // External Variables
         private GraphicsDeviceManager _graphics;
@@ -159,6 +162,20 @@ namespace ThreeThingGame
             Vector2 tempVelPlayer1 = player1.Velocity;
             Vector2 tempVelPlayer2 = player2.Velocity;
 
+            // Decay player temperature
+            player1.Temperature -= FREEZE_RATE * gameSpeed;
+            player2.Temperature -= FREEZE_RATE * gameSpeed;
+
+            // Check if player is in correct area to warm up
+            if (player1.Position.X < 200 & player1.Temperature < TARGET_TEMP)
+            {
+                player1.Temperature += 0.3f;
+            }
+            if (player2.Position.X < 200 & player2.Temperature < TARGET_TEMP)
+            {
+                player2.Temperature += 0.3f;
+            }
+
             // Read keyboard input
             foreach (Keys key in KeysPressed)
             {
@@ -176,28 +193,18 @@ namespace ThreeThingGame
                         // If key not held
                         if (!keyMap[Keys.S])
                         {
-                            (int y, int x) tile = Ground.GetNearestTileToPoint(
+                            player1.HeldCoal = MineTile(
+                                player1,
+                                ground,
                                 new Vector2(
                                     player1.Position.X + player1.Size.X / 2,
                                     player1.Position.Y + player1.Size.Y
                                     ),
-                                ground,
-                                new Rectangle(
-                                    200,
-                                    300,
-                                    760,
-                                    1000
-                                    ),
                                 new Vector2(
-                                    player1.Size.X,
+                                    player1.Size.X / 2,
                                     player1.Size.X / 2
                                     )
                                 );
-
-                            if (tile.y >= 0 && tile.x >= 0)
-                            {
-                                ground.Tiles[tile.y, tile.x].Filled = false;
-                            }
                         }
                         break;
                     case Keys.Left:
@@ -208,6 +215,23 @@ namespace ThreeThingGame
                         break;
                     case Keys.Down:
                         // P2 dig down
+
+                        // If key nod held
+                        if (!keyMap[Keys.Down])
+                        {
+                            player2.HeldCoal = MineTile(
+                                player2,
+                                ground,
+                                new Vector2(
+                                    player2.Position.X + player2.Size.X / 2,
+                                    player2.Position.Y + player2.Size.Y
+                                    ),
+                                new Vector2(
+                                    player2.Size.X / 2,
+                                    player2.Size.X / 2
+                                    )
+                                );
+                        }
                         break;
                 }
             }
@@ -605,7 +629,7 @@ namespace ThreeThingGame
                 );
 
             string timer = String.Empty;
-            if (timeLeft >= 10)
+            if ((int)(timeLeft % 60) >= 10)
             {
                 timer = $"{(int)timeLeft / 60}:{(int)(timeLeft % 60)}";
             }
@@ -709,7 +733,7 @@ namespace ThreeThingGame
                 );
             spriteBatch.DrawString(
                 fonts["SWTxt_12"],
-                $"Temperature: {player.Temperature}C",
+                $"Temperature: {Math.Round(player.Temperature, 1)}C",
                 new Vector2(
                     (baseRect.X + baseRect.Width) + 10 * scale.X,
                     (baseRect.Y) + 70 * scale.Y
@@ -721,6 +745,41 @@ namespace ThreeThingGame
                 0,
                 0
                 );
+        }
+        private static float MineTile(Player player, Ground ground, Vector2 point, Vector2 range)
+        {
+            float heldCoal = player.HeldCoal;
+
+            (int y, int x) tile = Ground.GetNearestTileToPoint(
+                point,
+                ground,
+                new Rectangle(
+                    200,
+                    300,
+                    760,
+                    1000
+                    ),
+                range
+                );
+
+            if (tile.y >= 0 && tile.x >= 0)
+            {
+                switch (ground.Tiles[tile.y, tile.x].Type)
+                {
+                    default: // Other
+                        ground.Tiles[tile.y, tile.x].Filled = false;
+                        break;
+                    case 1: // Coal
+                        heldCoal++;
+                        if (player.CoalCapacity < heldCoal)
+                        {
+                            heldCoal = player.CoalCapacity;
+                        }
+                        ground.Tiles[tile.y, tile.x].Filled = false;
+                        break;
+                }
+            }
+            return heldCoal;
         }
     }
 }

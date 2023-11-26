@@ -12,7 +12,7 @@ namespace ThreeThingGame
     {
         // Variables
         private uint _health;
-        private uint _temperature;
+        private float _temperature;
         private byte _ID;
         private float _heldCoal;
         private float _coalCapacity;
@@ -55,7 +55,7 @@ namespace ThreeThingGame
         }
         public Player(
             uint health,
-            uint temperature,
+            float temperature,
             byte ID,
             float coalCapacity,
             Vector2 position,
@@ -82,7 +82,7 @@ namespace ThreeThingGame
             set { _health = value; }
         }
 
-        public uint Temperature
+        public float Temperature
         {
             get { return _temperature; }
             set { _temperature = value; }
