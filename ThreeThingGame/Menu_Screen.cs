@@ -44,21 +44,8 @@ namespace ThreeThingGame
                 onClick: NewGameStart
                 );
 
-            // Create exit game button
-            Button exitGame = new Button(
-                text: "X",
-                wordWrap: false,
-                font: fonts["SWTxt_12"],
-                textColour: Color.White,
-                backColour: new Color(150, 50, 50, 255),
-                texture: textures["ButtonTexture"],
-                rect: new Rectangle(935, 0, 25, 25),
-                onClick: ExitGame
-                );
-
             // Cache buttons
             buttons.Add(newGame);
-            buttons.Add(exitGame);
         }
 
         // Methods
@@ -134,11 +121,6 @@ namespace ThreeThingGame
         private void NewGameStart(ref State.GameState state)
         {
             state = State.GameState.Day_Load;//State.GameState.Intro_Load;
-        }
-
-        private void ExitGame(ref State.GameState state)
-        {
-            Environment.Exit(0);
         }
     }
 }
