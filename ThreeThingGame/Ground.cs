@@ -398,17 +398,20 @@ namespace ThreeThingGame
                     }
 
                     // If exposed
-                    if (exposed && ground.Tiles[y, x].Filled)
+                    if (exposed)
                     {
-                        // Generate a rectangle based on where the tile should be on screen
-                        Rectangle destRect = new Rectangle(
-                            (int)(x * innerScale.X) + drawSpace.X,
-                            (int)(y * innerScale.Y) + drawSpace.Y,
-                            (int)innerScale.X,
-                            (int)innerScale.Y
-                            );
+                        if (ground.Tiles[y, x].Filled)
+                        {
+                            // Generate a rectangle based on where the tile should be on screen
+                            Rectangle destRect = new Rectangle(
+                                (int)(x * innerScale.X) + drawSpace.X,
+                                (int)(y * innerScale.Y) + drawSpace.Y,
+                                (int)innerScale.X,
+                                (int)innerScale.Y
+                                );
 
-                        container.Add(new GroundTile(destRect, ground.Tiles[y, x].Type));
+                            container.Add(new GroundTile(destRect, ground.Tiles[y, x].Type));
+                        }
                         atSurface = true;
                     }
 
